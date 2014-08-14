@@ -279,6 +279,7 @@ public class DivinityManager {
 
 		DivinityUtils.bc("Welcome &6" + player.name() + " &bto Worlds Apart!");
 		Bukkit.getPlayer(player.uuid()).setDisplayName("&7" + player.name());
+		Bukkit.getPlayer(player.uuid()).teleport(new Location(Bukkit.getWorld("world"), -53D, 85D, -20D));
 		
 		player.setDPI(DPI.JOIN_MESSAGE, "Joined!");
 		player.setDPI(DPI.QUIT_MESSAGE, "Left!");
