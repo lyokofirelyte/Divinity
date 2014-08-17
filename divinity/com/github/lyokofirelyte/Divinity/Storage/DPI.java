@@ -1,5 +1,7 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
+import com.github.lyokofirelyte.Divinity.Divinity;
+
 public enum DPI {
 	
 	BALANCE("BALANCE"),
@@ -87,8 +89,10 @@ public enum DPI {
 	}
 	
 	public String info;
+	public Divinity api;
 	
 	public String s(){
 		return info;
 	}
+
 }
