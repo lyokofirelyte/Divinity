@@ -80,7 +80,8 @@ public enum DPI {
 	GV2("GV2"),
 	GV3("GV3"),
 	GV4("GV4"),
-	GV5("GV5");
+	GV5("GV5"),
+	CAST_PREFIX("CAST_PREFIX");
 
 	DPI(String info){
 		this.info = info;

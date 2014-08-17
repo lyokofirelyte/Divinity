@@ -3,6 +3,7 @@ package com.github.lyokofirelyte.Divinity.JSON;
 import net.minecraft.server.v1_7_R3.ChatSerializer;
 import net.minecraft.server.v1_7_R3.PacketPlayOutChat;
 
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -43,6 +44,12 @@ public class JSONChatMessage {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(chatObject.toJSONString()), true));
     }
 
+    public void sendToAllPlayers() {  
+    	for(Player p : Bukkit.getOnlinePlayers()){
+    		((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(chatObject.toJSONString()), true));
+    	}
+    }
+    
     public String toString() {
         return chatObject.toJSONString();
     }
