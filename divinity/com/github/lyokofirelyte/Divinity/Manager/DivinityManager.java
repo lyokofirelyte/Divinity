@@ -2,6 +2,8 @@ package com.github.lyokofirelyte.Divinity.Manager;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,23 +13,21 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-
 import com.github.lyokofirelyte.Divinity.Divinity;
 import com.github.lyokofirelyte.Divinity.DivinityUtils;
 import com.github.lyokofirelyte.Divinity.Storage.DAI;
 import com.github.lyokofirelyte.Divinity.Storage.DPI;
-import com.github.lyokofirelyte.Divinity.Storage.DRI;
+import com.github.lyokofirelyte.Divinity.Storage.DRF;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityAlliance;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRegion;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRing;
+import com.github.lyokofirelyte.Divinity.Storage.DivinitySkillPlayer;
+import com.github.lyokofirelyte.Divinity.Storage.DivinityStorage;
+import com.github.lyokofirelyte.Divinity.Storage.ElySkill;
+import com.github.lyokofirelyte.Divinity.Storage.DRI;
 
 public class DivinityManager {
 
@@ -35,6 +35,10 @@ public class DivinityManager {
 	
 	public DivinityManager(Divinity div){
 		api = div;
+		enums.put("player", new ArrayList<Enum<?>>(Arrays.asList(DPI.values())));
+		enums.put("alliance", new ArrayList<Enum<?>>(Arrays.asList(DAI.values())));
+		enums.put("region", new ArrayList<Enum<?>>(Arrays.asList(DRI.values())));
+		enums.put("player2", new ArrayList<Enum<?>>(Arrays.asList(ElySkill.values())));
 	}
 	
 	private Map<UUID, DivinityPlayer> players = new HashMap<UUID, DivinityPlayer>();
@@ -42,8 +46,11 @@ public class DivinityManager {
 	private Map<String, DivinityRegion> regions = new HashMap<String, DivinityRegion>();
 	private Map<String, DivinityRing> rings = new HashMap<String, DivinityRing>();
 	
+	private Map<String, List<Enum<?>>> enums = new HashMap<String, List<Enum<?>>>();
+	
 	private DivinityPlayer system;
 	
+	private String sysDir = "./plugins/Divinity/";
 	private String dir = "./plugins/Divinity/users/";
 	private String allianceDir = "./plugins/Divinity/alliances/";
 	private String regionsDir = "./plugins/Divinity/regions/";
@@ -103,315 +110,146 @@ public class DivinityManager {
 	}
 	
 	public DivinityRegion getRegion(String name){
-		return regions.containsKey(name.toLowerCase()) ? regions.get(name.toLowerCase()) : (DivinityRegion)makeObject("region", name.toLowerCase());
+		return regions.containsKey(name.toLowerCase()) ? regions.get(name.toLowerCase()) : makeObject("region", name.toLowerCase());
 	}
 	
 	public DivinityAlliance getAlliance(String name){
-		return alliances.containsKey(name.toLowerCase()) ? alliances.get(name.toLowerCase()) : (DivinityAlliance)makeObject("alliance", name.toLowerCase());
+		return alliances.containsKey(name.toLowerCase()) ? alliances.get(name.toLowerCase()) : makeObject("alliance", name.toLowerCase());
 	}
 	
 	public DivinityPlayer getDivinityPlayer(UUID uuid){
-		return players.containsKey(uuid) ? players.get(uuid) : (DivinityPlayer)makeObject("player", uuid.toString());
+		return players.containsKey(uuid) ? players.get(uuid) : makeObject("player", uuid.toString());
 	}
 	
 	public DivinityPlayer getDivinityPlayer(Player player){
 		return getDivinityPlayer(player.getUniqueId());
 	}
 	
+	public DivinitySkillPlayer getSkillPlayer(Player player){
+		return (DivinitySkillPlayer) getDivinityPlayer(player.getUniqueId());
+	}
+	
 	public DivinityRing getDivinityRing(String name){
-		return rings.containsKey(name) ? rings.get(name) : (DivinityRing)makeObject("ring", name.toLowerCase());
+		return rings.containsKey(name) ? rings.get(name) : makeObject("ring", name.toLowerCase());
 	}
 	
-	private Object makeObject(String objectType, String name){
+	private DivinityStorage makeObject(String objectType, String name){
 		
-		String currentDir = objectType.equals("player") ? dir : objectType.equals("alliance") ? allianceDir : objectType.equals("region") ? regionsDir : ringsDir;
+		String currentDir = objectType.equals("player") ? dir : objectType.equals("alliance") ? allianceDir : objectType.equals("region") ? regionsDir : objectType.equals("ring") ? ringsDir : sysDir;
 		File folder = new File(currentDir);
-		
-		if (Arrays.asList(folder.list()).contains(name + ".yml")){
-			return unpackObject(new File(currentDir + name + ".yml"), name, objectType);
-		}
-		
 		File file = new File(currentDir + name + ".yml");
+		boolean newFile = false;
 		
-		try {
-			file.createNewFile();
-		} catch (IOException e) {}
-
-		return newObject(file, name, objectType);
-	}
-	
-	private Object newObject(File file, String name, String objectType){
-		
-		YamlConfiguration yaml = new YamlConfiguration();
-		yaml.set("CreationDate", api.divUtils.getTimeFull());
-		Object o = null;
-		
-		System.out.println(name + " " + objectType);
-		
-		switch (objectType){
-		
-			case "player": o = newUser(UUID.fromString(name), new DivinityPlayer(UUID.fromString(name), api)); break;
-			case "alliance": o = newAlliance(name, new DivinityAlliance(name, api)); break;
-			case "region": o = newRegion(name, new DivinityRegion(api, name)); break;
-			case "ring": o = newRing(name, new DivinityRing(api, name)); break;
+		if (!Arrays.asList(folder.list()).contains(name + ".yml")){
+			try {
+				file.createNewFile();
+				newFile = true;
+			} catch (IOException e) {}
 		}
 		
 		try {
-			yaml.save(file);
-		} catch (Exception e){}
-		
-		return o;
+			return unpackObject(file, name, objectType, newFile);
+		} catch (Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
-	private Object unpackObject(File file, String name, String objectType){
+	private DivinityStorage unpackObject(File file, String name, String objectType, boolean newFile) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+		DivinityStorage storage = objectType.equals("player") ? new DivinityStorage(UUID.fromString(name), api) : new DivinityStorage(name, api);
+		YamlConfiguration yaml = newFile ? new YamlConfiguration() : YamlConfiguration.loadConfiguration(file);
+		
+		for (String enumName : enums.keySet()){
+			for (Enum<?> enumType : enums.get(enumName)){
+				if (yaml.contains(enumType.toString()) && (enumName.startsWith(objectType) || objectType.equals("system"))){
+					storage.set(enumType, yaml.get(enumType.toString()));
+					System.out.println(name + " " + enumName + " " + enumType.toString() + " " + yaml.get(enumType.toString()));
+				}
+			}
+		}
 		
 		switch (objectType){
 		
-			case "player":
-				
-				DivinityPlayer player = new DivinityPlayer(UUID.fromString(name), api);
-				YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-				
-				for (DPI info : DPI.values()){
-					if (yaml.isInt(info.s())){
-						player.setDPI(info, yaml.getInt(info.s()));
-					} else if (yaml.isString(info.s())){
-						player.setDPI(info, yaml.getString(info.s()));
-					} else if (yaml.isList(info.s())){
-						player.setDPI(info, yaml.getStringList(info.s()));
-					} else if (yaml.get(info.s()) instanceof ItemStack[]){
-						player.setDPI(info, yaml.get(info.s()));
-					}
-				}
-				
-				players.put(UUID.fromString(name), player);
-				
-			return player;
+			case "system":
+				storage.set(DPI.DISPLAY_NAME, "&6Console");
+				storage.set(DPI.PM_COLOR, "&f");
+				system = storage;
+			break;
 			
-			case "alliance":
-				
-				DivinityAlliance alliance = new DivinityAlliance(name, api);
-				yaml = YamlConfiguration.loadConfiguration(file);
-				
-				for (DAI info : DAI.values()){
-					if (yaml.isInt(info.s())){
-						alliance.setDAI(info, yaml.getInt(info.s()));
-					} else if (yaml.isString(info.s())){
-						alliance.setDAI(info, yaml.getString(info.s()));
-					} else if (yaml.isList(info.s())){
-						alliance.setDAI(info, yaml.getStringList(info.s()));
-					} else if (yaml.get(info.s()) instanceof ItemStack[]){
-						alliance.setDAI(info, yaml.get(info.s()));
-					}
-				}
-				
-				alliances.put(name, alliance);
-				
-			return alliance;
-			
-			case "region":
-				
-				DivinityRegion region = new DivinityRegion(api, name);
-				yaml = YamlConfiguration.loadConfiguration(file);
-				
-				region.setWorld(yaml.getString("WORLD"));
-				region.setDisabled(yaml.getBoolean("DISABLED"));
-				region.setArea(yaml.getInt("AREA"));
-				region.setWidth(yaml.getInt("WIDTH"));
-				region.setHeight(yaml.getInt("HEIGHT"));
-				region.setLength(yaml.getInt("LENGTH"));
-				region.setPriority(yaml.getInt("PRIORITY"));
-				region.setMaxBlock(yaml.getString("MAX_BLOCK"));
-				region.setMinBlock(yaml.getString("MIN_BLOCK"));
-				region.setPerms(yaml.getStringList("PERMS"));
-				
-				for (DRI info : DRI.values()){
-					if (yaml.contains(info.s())){
-						region.addFlag(info, yaml.getBoolean(info.s()));
-					}
-				}
-				
-				regions.put(name, region);
-				
-			return region;
+			case "player": storage = newFile ? newUser(UUID.fromString(name), storage) : storage; players.put(UUID.fromString(name), storage); break;
+			case "alliance": alliances.put(name, storage); break;
+			case "region": regions.put(name, storage); break;
 			
 			case "ring":
-				
-				DivinityRing ring = new DivinityRing(api, name);
-				yaml = YamlConfiguration.loadConfiguration(file);
-				
-				rings.put(name, ring);
-				
-			return ring;
+				storage.setCenter((yaml.getString("CENTER")).split(" "));
+				storage.setDest(yaml.getString("DEST"));
+				storage.setInOperation(false);
+				storage.setRingMaterial(yaml.getInt("MAT_ID"), (byte) yaml.getInt("BYTE_ID"));
+				rings.put(name, storage);
+			break;
 		}
 		
-		return null;
+		return storage;
 	}
 	
-	public DivinityRing newRing(String name, DivinityRing ring){
-		return ring;
-	}
-	
-	public DivinityRegion newRegion(String name, DivinityRegion region){
-		
-		region.setDisabled(false);
-		region.setWorld("world");
-		
-		regions.put(name, region);
-		return region;
-	}
-	
-	private DivinityAlliance newAlliance(String name, DivinityAlliance alliance){
-		
-		alliance.setDAI(DAI.BALANCE, 0);
-		alliance.setDAI(DAI.NAME, name);
-		alliance.setDAI(DAI.MEMBERS, new ArrayList<String>());
-		alliance.setDAI(DAI.TIER, 0);
-		alliance.setDAI(DAI.COLOR_1, "&7");
-		alliance.setDAI(DAI.COLOR_2, "&7");
-		alliance.setDAI(DAI.CENTER, "0 0 0");
-		
-		alliances.put(name, alliance);
-		return alliance;
-	}
-	
-	private DivinityPlayer newUser(UUID uuid, DivinityPlayer player){
+	private DivinityStorage newUser(UUID uuid, DivinityStorage player){
 
 		DivinityUtils.bc("Welcome &6" + player.name() + " &bto Worlds Apart!");
 		Bukkit.getPlayer(player.uuid()).setDisplayName("&7" + player.name());
 		Bukkit.getPlayer(player.uuid()).teleport(new Location(Bukkit.getWorld("world"), -53D, 85D, -20D));
 		
-		player.setDPI(DPI.JOIN_MESSAGE, "Joined!");
-		player.setDPI(DPI.QUIT_MESSAGE, "Left!");
-		player.setDPI(DPI.ALLIANCE_COLOR, "&3");
-		player.setDPI(DPI.PM_COLOR, "&d");
-		player.setDPI(DPI.GLOBAL_COLOR, "&f");
-		player.setDPI(DPI.BALANCE, 0);
-		player.setDPI(DPI.RANK_NAME, "Guest");
-		player.setDPI(DPI.RANK_COLOR, "&8");
-		player.setDPI(DPI.RANK_DESC, "&6Guest rank. No perms at all, except chat!");
-		player.setDPI(DPI.STAFF_DESC, "&6A guest that should register soon!");
-		player.setDPI(DPI.STAFF_COLOR, "&7");
-		player.setDPI(DPI.DISPLAY_NAME, "&7" + player.name());
-		player.setDPI(DPI.ALLIANCE_COLOR_1, "&7");
-		player.setDPI(DPI.ALLIANCE_COLOR_2, "&7");
-		player.setDPI(DPI.AFK_TIME, 0);
-		player.setDPI(DPI.AFK_TIME_INIT, 0);
-		player.setDPI(DPI.DEATHLOCS_TOGGLE, "true");
-		player.setDPI(DPI.ALLIANCE_TOGGLE, "true");
-		player.setDPI(DPI.PARTICLES_TOGGLE, "true");
-		player.setDPI(DPI.FIREWORKS_TOGGLE, "true");
-		player.setDPI(DPI.SCOREBOARD_TOGGLE, "true");
-		player.setDPI(DPI.PLAYER_DESC, "&7&oGeneric player biography / description.\n&7&oUse /bio <message> to change this.");
-		player.setDPI(DPI.PERMS, new ArrayList<String>());
-		player.setDPI(DPI.CHAT_FILTER_TOGGLE, true);
+		player.set(DPI.JOIN_MESSAGE, "Joined!");
+		player.set(DPI.QUIT_MESSAGE, "Left!");
+		player.set(DPI.ALLIANCE_COLOR, "&3");
+		player.set(DPI.PM_COLOR, "&d");
+		player.set(DPI.GLOBAL_COLOR, "&f");
+		player.set(DPI.BALANCE, 0);
+		player.set(DPI.RANK_NAME, "Guest");
+		player.set(DPI.RANK_COLOR, "&8");
+		player.set(DPI.RANK_DESC, "&6Guest rank. No perms at all, except chat!");
+		player.set(DPI.STAFF_DESC, "&6A guest that should register soon!");
+		player.set(DPI.STAFF_COLOR, "&7");
+		player.set(DPI.DISPLAY_NAME, "&7" + player.name());
+		player.set(DPI.ALLIANCE_COLOR_1, "&7");
+		player.set(DPI.ALLIANCE_COLOR_2, "&7");
+		player.set(DPI.AFK_TIME, 0);
+		player.set(DPI.AFK_TIME_INIT, 0);
+		player.set(DPI.DEATHLOCS_TOGGLE, "true");
+		player.set(DPI.ALLIANCE_TOGGLE, "true");
+		player.set(DPI.PARTICLES_TOGGLE, "true");
+		player.set(DPI.FIREWORKS_TOGGLE, "true");
+		player.set(DPI.SCOREBOARD_TOGGLE, "true");
+		player.set(DPI.PLAYER_DESC, "&7&oGeneric player biography / description.\n&7&oUse /bio <message> to change this.");
+		player.set(DPI.PERMS, new ArrayList<String>());
+		player.set(DPI.CHAT_FILTER_TOGGLE, true);
 		
-		players.put(uuid, player);
 		return player;
 	}
-	
-	private void systemLoad(File file){
-		
-		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-		DivinityPlayer player = new DivinityPlayer("system", api);
-		
-		for (DPI info : DPI.values()){
-			if (yaml.isString(info.s())){
-				player.setDPI(info, yaml.getString(info.s()));
-			} else if (yaml.isList(info.s())){
-				player.setDPI(info, yaml.getStringList(info.s()));
-			} else if (yaml.isInt(info.s())){
-				player.setDPI(info, yaml.getInt(info.s()));
-			}
-		}
-		
-		try {
-			yaml.save(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		player.setDPI(DPI.DISPLAY_NAME, "&6Console");
-		player.setDPI(DPI.PM_COLOR, "&f");
-		system = player;
-	}
 
-	private void saveRes(File file, DivinityPlayer dp) throws IOException {
+	private void saveRes(File file, DivinityStorage dp) throws IOException {
 		
 		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 		
-		for (DPI info : DPI.values()){
-			if (dp.getRawInfo(info) instanceof String){
-				if (!dp.getDPI(info).equals("none")){
-					yaml.set(info.s(), dp.getDPI(info));
+		for (String enumName : enums.keySet()){
+			if (enums.get(enumName).get(0) instanceof DRF == false){
+				for (Enum<?> enumType : enums.get(enumName)){
+					if (dp.getRawInfo(enumType) != null){
+						if (dp.getRawInfo(enumType) instanceof Location){
+							Location l = (Location) dp.getRawInfo(enumType);
+							yaml.set(enumType.toString(), l.getWorld().getName() + " " + l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ() + " " + l.getPitch() + " " + l.getYaw());
+						} else {
+							yaml.set(enumType.toString(), dp.getRawInfo(enumType));
+						}
+					}
 				}
-			} else if (dp.getRawInfo(info) instanceof List){
-				if (dp.getListDPI(info).size() > 0){
-					yaml.set(info.s(), dp.getListDPI(info));
-				}
-			} else if (dp.getRawInfo(info) instanceof Integer){
-				if (dp.getIntDPI(info) != 0){
-					yaml.set(info.s(), dp.getIntDPI(info));
-				}
-			} else if (dp.getRawInfo(info) instanceof Location){
-				Location l = (Location) dp.getRawInfo(info);
-				yaml.set(info.s(), l.getWorld().getName() + " " + l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ() + " " + l.getPitch() + " " + l.getYaw());
-			} else if (dp.getRawInfo(info) instanceof ItemStack[]){
-				yaml.set(info.s(), (ItemStack[])dp.getRawInfo(info));
-			} else {
-				yaml.set(info.s(), dp.getDPI(info));
 			}
 		}
 		
-		yaml.save(file);
-	}
-	
-	private void saveAlliance(File file, DivinityAlliance dp) throws IOException {
-		
-		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-		
-		for (DAI info : DAI.values()){
-			if (dp.getRawInfo(info) instanceof String){
-				if (!dp.getDAI(info).equals("none")){
-					yaml.set(info.s(), dp.getDAI(info));
-				}
-			} else if (dp.getRawInfo(info) instanceof List){
-				if (dp.getListDAI(info).size() > 0){
-					yaml.set(info.s(), dp.getListDAI(info));
-				}
-			} else if (dp.getRawInfo(info) instanceof Integer){
-				if (dp.getIntDAI(info) != 0){
-					yaml.set(info.s(), dp.getIntDAI(info));
-				}
-			} else if (dp.getRawInfo(info) instanceof Location){
-				Location l = (Location) dp.getRawInfo(info);
-				yaml.set(info.s(), l.getWorld().getName() + " " + l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ() + " " + l.getPitch() + " " + l.getYaw());
-			} else if (dp.getRawInfo(info) instanceof ItemStack[]){
-				yaml.set(info.s(), (ItemStack[])dp.getRawInfo(info));
-			} else {
-				yaml.set(info.s(), dp.getDAI(info));
+		for (DRF info : DRF.values()){
+			if (dp.getFlags().containsKey(info)){
+				yaml.set(info.s(), dp.getFlag(info));
 			}
-		}
-		
-		yaml.save(file);
-	}
-	
-	private void saveRegion(File file, DivinityRegion region) throws IOException {
-		
-		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-		yaml.set("WORLD", region.getWorld());
-		yaml.set("DISABLED", region.isDisabled());
-		yaml.set("MAX_BLOCK", region.getMaxBlock());
-		yaml.set("MIN_BLOCK", region.getMinBlock());
-		yaml.set("HEIGHT", region.getHeight());
-		yaml.set("LENGTH", region.getLength());
-		yaml.set("WIDTH", region.getWidth());
-		yaml.set("AREA", region.getArea());
-		yaml.set("PERMS", region.getPerms());
-		yaml.set("PRIORITY", region.getPriority());
-		
-		for (DRI info : DRI.values()){
-			yaml.set(info.s(), region.getFlag(info));
 		}
 		
 		yaml.save(file);
@@ -420,37 +258,47 @@ public class DivinityManager {
 	private void saveRing(File file, DivinityRing ring) throws IOException {
 		
 		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+		
+		String center = ring.getCenter()[0];
+		
+		for (int i = 1; i < ring.getCenter().length; i++){
+			center = center + " " + ring.getCenter()[i];
+		}
+		
+		yaml.set("CENTER", center);
+		yaml.set("MAT_ID", ring.getMatId());
+		yaml.set("BYTE_ID", ring.getMatByte());
+		yaml.set("DEST", ring.getDest());
+		
 		yaml.save(file);
 	}
 	
-	public void load() throws IOException {
+	public void load() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		players = new HashMap<UUID, DivinityPlayer>();
 		alliances = new HashMap<String, DivinityAlliance>();
 		regions = new HashMap<String, DivinityRegion>();
 		rings = new HashMap<String, DivinityRing>();
 		
-		List<String> dirs = Arrays.asList(dir, allianceDir, regionsDir, ringsDir);
+		List<String> dirs = Arrays.asList(dir, allianceDir, regionsDir, ringsDir, sysDir);
 		String objectType = "";
-		
-		if (!new File("./plugins/Divinity/system.yml").exists()){
-			new File("./plugins/Divinity/system.yml").createNewFile();
-		}
-		
-		systemLoad(new File("./plugins/Divinity/system.yml"));
-		
+
 		for (String d : dirs){
 			
 			if (!new File(d).exists()){
 				new File(d).mkdirs();
 			}
 			
-			objectType = d.equals(dir) ? "player" : d.equals(allianceDir) ? "alliance" : d.equals(regionsDir) ? "region" : "rings";
+			objectType = d.equals(dir) ? "player" : d.equals(allianceDir) ? "alliance" : d.equals(regionsDir) ? "region" : d.equals(sysDir) ? "system" : "ring";
 			
 			for (String file : new File(d).list()){
-				if (!file.contains("~")){
+				if (!file.contains("~") && !d.equals(sysDir) || (d.equals(sysDir) && file.equals("system.yml"))){
 					makeObject(objectType, file.replace(".yml", ""));
 				}
+			}
+			
+			if (system == null){
+				makeObject("system", "system");
 			}
 		}
 		
@@ -461,17 +309,17 @@ public class DivinityManager {
 		
 		for (DivinityPlayer dp : players.values()){
 			File file = new File(dir + dp.uuid().toString() + ".yml");
-			saveRes(file, dp);
+			saveRes(file, (DivinityStorage) dp);
 		}
 		
 		for (DivinityAlliance dp : alliances.values()){
 			File file = new File(allianceDir + dp.name() + ".yml");
-			saveAlliance(file, dp);
+			saveRes(file, (DivinityStorage) dp);
 		}
 		
 		for (DivinityRegion region : regions.values()){
 			File file = new File(regionsDir + region.name() + ".yml");
-			saveRegion(file, region);
+			saveRes(file, (DivinityStorage) region);
 		}
 		
 		for (DivinityRing ring : rings.values()){
@@ -479,7 +327,7 @@ public class DivinityManager {
 			saveRing(file, ring);
 		}
 		
-		saveRes(new File("./plugins/Divinity/system.yml"), system);
+		saveRes(new File(sysDir + "system.yml"), (DivinityStorage)system);
 		
 		DivinityUtils.bc("Divinity - &6" + userSize() + " &busers saved.");
 	}

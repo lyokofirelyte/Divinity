@@ -114,7 +114,7 @@ public class DivinityRegistry implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     	
     	if (sender instanceof Player){
-    		if (main.getDivPlayer((Player)sender).getBoolDPI(DPI.DISABLED)){
+    		if (main.getDivPlayer((Player)sender).getBool(DPI.DISABLED)){
     			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&oYou are prevented from using commands at this time."));
     			return true;
     		}
@@ -127,7 +127,7 @@ public class DivinityRegistry implements CommandExecutor {
 	    	Map<Integer, String> filters = new HashMap<Integer, String>();
 	    	
 	    	for (int x = 0; x < args.length; x++){
-	    		for (String filter : system.getListDPI(DPI.FILTER)){
+	    		for (String filter : system.getList(DPI.FILTER)){
 	    			if (ChatColor.stripColor(DivinityUtils.AS(args[x].toLowerCase())).contains(filter.split(" % ")[0])){
 	    				filters.put(x, args[x].replace(filter.split(" % ")[0], filter.split(" % ")[1]));
 	    			}
@@ -148,7 +148,7 @@ public class DivinityRegistry implements CommandExecutor {
     						if (m.getAnnotation(DivCommand.class) != null && Arrays.asList(m.getAnnotation(DivCommand.class).aliases()).contains(command)){
     							try {
     								DivCommand anno = m.getAnnotation(DivCommand.class);
-    								if ((sender instanceof Player && main.getDivPlayer((Player)sender).getListDPI(DPI.PERMS).contains(anno.perm())) || sender instanceof Player == false || sender.isOp()){
+    								if ((sender instanceof Player && main.getDivPlayer((Player)sender).getList(DPI.PERMS).contains(anno.perm())) || sender instanceof Player == false || sender.isOp()){
     									if (args.length > anno.max() || args.length < anno.min()){
     										DivinityUtils.s(sender, anno.help());
     										return true;

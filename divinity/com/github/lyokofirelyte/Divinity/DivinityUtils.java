@@ -55,10 +55,10 @@ public class DivinityUtils {
 	
 	public static void s(CommandSender sender, String message){
 		if (sender instanceof Player){
-			if (api.getDivPlayer((Player)sender).getBoolDPI(DPI.ELY)){
+			if (api.getDivPlayer((Player)sender).getBool(DPI.ELY)){
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', h2 + message));
 			} else {
-				api.getDivPlayer((Player)sender).setDPI(DPI.ELY, true);
+				api.getDivPlayer((Player)sender).set(DPI.ELY, true);
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', h + message));
 			}
 		} else {

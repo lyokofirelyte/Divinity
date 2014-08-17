@@ -43,6 +43,12 @@ public class JSONChatMessage {
     public void sendToPlayer(Player player) {  
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(chatObject.toJSONString()), true));
     }
+    
+    public void sendToAllPlayers(){
+    	for (Player player : Bukkit.getOnlinePlayers()){
+    		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(chatObject.toJSONString()), true));
+    	}
+    }
 
     public void sendToAllPlayers() {  
     	for(Player p : Bukkit.getOnlinePlayers()){
