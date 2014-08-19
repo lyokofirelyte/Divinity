@@ -65,7 +65,7 @@ public class DivinityManager {
 	
 	public List<DivinityPlayer> getAllUsers(){
 		try {
-			return (List<DivinityPlayer>) new ArrayList(Arrays.asList(data.get(dir).values()));
+			return new ArrayList(Arrays.asList(data.get(dir).values()));
 		} catch (Exception e){
 			return new ArrayList<DivinityPlayer>();
 		}

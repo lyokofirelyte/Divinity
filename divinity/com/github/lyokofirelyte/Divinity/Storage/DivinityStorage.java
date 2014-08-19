@@ -294,14 +294,7 @@ public class DivinityStorage implements DivInfo {
 	
 		public Region(String n, Divinity i) {
 			super(n, i);
-			for (DRF drf : DRF.values()){
-				if (stuff.containsKey(drf.toString())){
-					flags.put(drf, getBool(drf));
-				}
-			}
 		}
-		
-		private Map<DRF, Boolean> flags = new HashMap<DRF, Boolean>();
 
 		public int getPriority(){
 			return getInt(DRI.PRIORITY);
@@ -336,11 +329,17 @@ public class DivinityStorage implements DivInfo {
 		}
 		
 		public boolean getFlag(DRF flag){
-			return flags.containsKey(flag) ? flags.get(flag) : false;
+			return getBool(flag);
 		}
 		
 		public Map<DRF, Boolean> getFlags(){
-			return flags;
+			Map<DRF, Boolean> flagMap = new HashMap<>();
+			for (DRF f : DRF.values()){
+				if (stuff.containsKey(f.toString())){
+					flagMap.put(f, getBool(f));
+				}
+			}
+			return flagMap;
 		}
 		
 		public boolean canBuild(org.bukkit.entity.Player p){
