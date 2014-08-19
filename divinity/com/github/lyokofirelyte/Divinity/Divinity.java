@@ -1,11 +1,9 @@
 package com.github.lyokofirelyte.Divinity;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -60,7 +58,7 @@ public class Divinity extends DivinityAPI {
 		
 		try {
 			divManager.save();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		

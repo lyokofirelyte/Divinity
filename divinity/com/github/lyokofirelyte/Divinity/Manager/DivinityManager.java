@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,15 +61,15 @@ public class DivinityManager {
 			}
 		}
 		
-		return (DivinityPlayer) modifyObject(dir, s, true, true);
+		return null;
 	}
 	
 	public List<DivinityPlayer> getAllUsers(){
-		try {
-			return new ArrayList(Arrays.asList(data.get(dir).values()));
-		} catch (Exception e){
-			return new ArrayList<DivinityPlayer>();
+		List<DivinityPlayer> list = new ArrayList<>();
+		for (DivinityStorage ds : data.get(dir).values()){
+			list.add((DivinityPlayer)ds);
 		}
+		return list;
 	}
 	
 	public Map<String, DivinityStorage> getMap(String directory){
