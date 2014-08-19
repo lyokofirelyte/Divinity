@@ -9,23 +9,23 @@ public interface DivInfo {
 
 	public String name();
 	
-	public Object getRawInfo(Object i);
+	public Object getRawInfo(Enum<?> i);
 	
-	public String getStr(Object i);
+	public String getStr(Enum<?> i);
 	
-	public int getInt(Object i);
+	public int getInt(Enum<?> i);
 	
-	public long getLong(Object i);
+	public long getLong(Enum<?> i);
 	
-	public double getDouble(Object i);
+	public double getDouble(Enum<?> i);
 	
-	public boolean getBool(Object i);
+	public boolean getBool(Enum<?> i);
 	
-	public List<String> getList(Object i);
+	public List<String> getList(Enum<?> i);
 	
-	public Location getLoc(Object i);
+	public Location getLoc(Enum<?> i);
 	
-	public ItemStack[] getStack(Object i);
+	public ItemStack[] getStack(Enum<?> i);
 	
-	public void set(Object i, Object infos);
+	public void set(Enum<?> i, Object infos);
 }

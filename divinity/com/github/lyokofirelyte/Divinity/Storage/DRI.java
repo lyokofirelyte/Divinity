@@ -1,5 +1,7 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
+import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
+
 public enum DRI {
 	
 	PERMS("PERMS"),
@@ -19,6 +21,7 @@ public enum DRI {
 	
 	public String info;
 	
+	@DivStorageModule (types = {DivinityManager.regionsDir})
 	public String s(){
 		return info;
 	}

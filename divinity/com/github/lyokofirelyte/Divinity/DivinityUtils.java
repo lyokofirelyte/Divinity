@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -51,6 +52,27 @@ public class DivinityUtils {
 	
 	public static String AS(String message){
 		return ChatColor.translateAlternateColorCodes('&', message);
+	}
+	
+	public static BlockFace getPlayerDirection(Player player) {
+		
+		List<BlockFace> faces = Arrays.asList(
+			BlockFace.WEST, BlockFace.WEST_NORTH_WEST, BlockFace.NORTH_NORTH_WEST,
+			BlockFace.NORTH, BlockFace.NORTH_NORTH_EAST, BlockFace.NORTH_EAST,
+			BlockFace.EAST_NORTH_EAST, BlockFace.EAST, BlockFace.EAST_SOUTH_EAST,
+			BlockFace.SOUTH_EAST,BlockFace.SOUTH_SOUTH_EAST, BlockFace.SOUTH, 
+			BlockFace.SOUTH_SOUTH_WEST, BlockFace.SOUTH_WEST, BlockFace.WEST_SOUTH_WEST, BlockFace.WEST
+		);
+
+		float y = player.getLocation().getYaw();
+	     
+		if( y < 0 ){y += 360;}
+	     
+		y %= 360;
+	     
+		int i = (int)((y+8) / 22.5);
+		
+		return faces.get(i) != null ? faces.get(i) : BlockFace.WEST;
 	}
 	
 	public static void s(CommandSender sender, String message){

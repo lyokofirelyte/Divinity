@@ -20,6 +20,7 @@ import com.github.lyokofirelyte.Divinity.Divinity;
 import com.github.lyokofirelyte.Divinity.DivinityUtils;
 import com.github.lyokofirelyte.Divinity.Storage.DPI;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
+import com.github.lyokofirelyte.Divinity.Storage.DivinitySystem;
 
 
 public class DivinityRegistry implements CommandExecutor {
@@ -123,7 +124,7 @@ public class DivinityRegistry implements CommandExecutor {
     	List<String> filteredCmds = Arrays.asList("bio", "tell", "pm", "t", "msg", "r");
     	
     	if (filteredCmds.contains(cmd)){
-	    	DivinityPlayer system = main.getSystem();
+	    	DivinitySystem system = main.getSystem();
 	    	Map<Integer, String> filters = new HashMap<Integer, String>();
 	    	
 	    	for (int x = 0; x < args.length; x++){

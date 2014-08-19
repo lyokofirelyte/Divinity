@@ -1,5 +1,7 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
+import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
+
 public enum ElySkill {
 
 	MINING("MINING"),
@@ -10,9 +12,10 @@ public enum ElySkill {
 		this.skill = skill;
 	}
 	
+	@DivStorageModule (types = {DivinityManager.dir})
 	public String s(){
 		return skill;
 	}
-	
+
 	String skill;
 }

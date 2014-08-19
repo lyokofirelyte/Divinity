@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -12,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.reflections.Reflections;
 
 import com.github.lyokofirelyte.Divinity.Commands.DivinityRegistry;
 import com.github.lyokofirelyte.Divinity.JSON.FW;
@@ -21,6 +23,7 @@ import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRegion;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRing;
 import com.github.lyokofirelyte.Divinity.Storage.DivinitySkillPlayer;
+import com.github.lyokofirelyte.Divinity.Storage.DivinitySystem;
 
 public class Divinity extends DivinityAPI {
 	
@@ -39,11 +42,16 @@ public class Divinity extends DivinityAPI {
 		divUtils = new DivinityUtils(this);
 		divReg = new DivinityRegistry(this);
 		fw = new FW(this);
+		registerEnums();
 		
 		try {
 			divManager.load();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		
+		for (DivinityModule module : modules){
+			module.onRegister();
 		}
 	}
 	
@@ -56,40 +64,56 @@ public class Divinity extends DivinityAPI {
 			e.printStackTrace();
 		}
 		
+		for (DivinityModule module : modules){
+			module.onUnRegister();
+		}
+		
 		Bukkit.getScheduler().cancelTasks(this);
 	}
-
-	@Override
-	public Divinity getApi() {
-		return this;
+	
+	private void registerEnums(){
+		
+		Reflections ref = new Reflections("com.github.lyokofirelyte.Divinity.Storage");
+		
+		for (Class<? extends Enum> e : ref.getSubTypesOf(Enum.class)){
+			divManager.enums.add(e);
+		}
 	}
 	
-	public DivinitySkillPlayer matchSkillPlayer(String player){
-		return (DivinitySkillPlayer) divManager.searchForPlayer(player).get(true);
-	}
-
-	public DivinityAlliance getDivAlliance(String alliance){
-		return divManager.getAlliance(alliance);
-	}
-	
-	public DivinityRegion getDivRegion(String region){
-		return divManager.getRegion(region);
-	}
-	
-	public DivinityRing getDivRing(String ring){
-		return divManager.getDivinityRing(ring);
-	}
-	
-	public DivinityPlayer getSystem(){
-		return divManager.getSystem();
+	public List<DivinityModule> getAllModules(){
+		return modules;
 	}
 	
 	public DivinityPlayer getDivPlayer(Player player){
-		return divManager.getDivinityPlayer(player);
+		return (DivinityPlayer) divManager.searchForPlayer(player.getUniqueId().toString());
 	}
 
 	public DivinityPlayer getDivPlayer(UUID player){
-		return divManager.getDivinityPlayer(player);
+		return (DivinityPlayer) divManager.searchForPlayer(player.toString());
+	}
+	
+	public DivinitySkillPlayer matchSkillPlayer(String player){
+		return (DivinitySkillPlayer) divManager.searchForPlayer(player);
+	}
+
+	public DivinityAlliance getDivAlliance(String alliance){
+		return (DivinityAlliance) divManager.getStorage(DivinityManager.allianceDir, alliance);
+	}
+	
+	public DivinityRegion getDivRegion(String region){
+		return (DivinityRegion) divManager.getStorage(DivinityManager.regionsDir, region);
+	}
+	
+	public DivinityRing getDivRing(String ring){
+		return (DivinityRing) divManager.getStorage(DivinityManager.ringsDir, ring);
+	}
+	
+	public DivinitySystem getSystem(){
+		return (DivinitySystem) divManager.getStorage(DivinityManager.sysDir, "system");
+	}
+	
+	public DivinitySystem getMarkkit(){
+		return (DivinitySystem) divManager.getStorage(DivinityManager.sysDir, "markkit");
 	}
 	
 	public String AS(String s){
@@ -104,21 +128,9 @@ public class Divinity extends DivinityAPI {
 		}
 		return false;
 	}
-
-	public void update(DivinityPlayer dp){
-		if (!dp.name().equals("system")){
-			divManager.getMap().put(dp.uuid(), dp);
-		}
-	}
 	
 	public void event(Event e){
 		Bukkit.getPluginManager().callEvent(e);
-	}
-	
-	public void aUpdate(DivinityAlliance dp){
-		if (!dp.name().equals("system")){
-			divManager.getAllianceMap().put(dp.name(), dp);
-		}
 	}
 	
 	public void cancelTask(String name){

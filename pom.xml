@@ -20,6 +20,16 @@
 		</repository>
 	</distributionManagement>
 	<dependencies>
+	     <dependency>
+         	<groupId>org.reflections</groupId>
+         	<artifactId>reflections</artifactId>
+        	<version>0.9.9-RC1</version>
+    	 </dependency>
+    	 <dependency>  
+            <groupId>javassist</groupId>  
+            <artifactId>javassist</artifactId>  
+            <version>3.12.1.GA</version>  
+        </dependency> 
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
@@ -56,6 +66,27 @@
 		</resources>
 		<plugins>
 			<plugin>
+       			 <groupId>org.apache.maven.plugins</groupId>
+       			 <artifactId>maven-shade-plugin</artifactId>
+       			 <version>2.3</version>
+       			 <configuration>
+       			 	<artifactSet>
+ 				 		<includes>
+    						<include>org.reflections:*</include>
+    						<include>javassist:*</include>
+  						</includes>
+					</artifactSet>
+				</configuration>
+        		<executions>
+         			<execution>
+           		 		<phase>package</phase>
+            			<goals>
+              				<goal>shade</goal>
+           			 	</goals>
+          			</execution>
+        		</executions>
+      		</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -63,30 +94,6 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>site-maven-plugin</artifactId>
-				<version>0.9</version>
-				<configuration>
-					<message>Maven artifacts for ${project.version}</message>
-					<noJekyll>true</noJekyll>
-					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-					<branch>refs/heads/mvn-repo</branch>
-					<includes>
-						<include>**/*</include>
-					</includes>
-					<repositoryName>WCAPI</repositoryName>
-					<repositoryOwner>lyokofirelyte</repositoryOwner>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>site</goal>
-						</goals>
-						<phase>deploy</phase>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

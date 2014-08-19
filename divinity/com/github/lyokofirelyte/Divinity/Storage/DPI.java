@@ -1,6 +1,6 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
-import com.github.lyokofirelyte.Divinity.Divinity;
+import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
 
 public enum DPI {
 	
@@ -25,8 +25,10 @@ public enum DPI {
 	ALLIANCE_COLOR_1("ALLIANCE_COLOR_1"),
 	ALLIANCE_COLOR_2("ALLIANCE_COLOR_2"),
 	ALLIANCE_NAME("ALLIANCE_NAME"),
+	CAST_PREFIX("CAST_PREFIX"),
 	ELY("ELY"),
 	LOGGER("LOGGER"),
+	CALENDAR_LINK("CALENDAR_LINK"),
 	LOGGER_RESULTS("LOGGER_RESULTS"),
 	AFK_PLAYERS("AFK_PLAYERS"),
 	DEATH_CHEST_LOC("DEATH_CHEST_LOC"),
@@ -89,10 +91,9 @@ public enum DPI {
 	}
 	
 	public String info;
-	public Divinity api;
-	
+
+	@DivStorageModule (types = {DivinityManager.dir, DivinityManager.sysDir})
 	public String s(){
 		return info;
 	}
-
 }

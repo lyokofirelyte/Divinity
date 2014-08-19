@@ -1,5 +1,7 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
+import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
+
 public enum DAI {
 	
 	NAME("NAME"),
@@ -17,6 +19,7 @@ public enum DAI {
 	
 	public String info;
 	
+	@DivStorageModule (types = {DivinityManager.allianceDir})
 	public String s(){
 		return info;
 	}
