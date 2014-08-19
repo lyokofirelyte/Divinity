@@ -61,6 +61,12 @@ public class DivinityManager {
 			}
 		}
 		
+		try {
+			if (Bukkit.getPlayer(UUID.fromString(s)) != null){
+				return (DivinityPlayer) modifyObject(dir, s, true, true);
+			}
+		} catch (Exception e){}
+		
 		return null;
 	}
 	
