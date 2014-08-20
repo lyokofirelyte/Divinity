@@ -5,4 +5,5 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public interface DivinitySystem extends DivInfo {
 
 	public YamlConfiguration getMarkkit();
+	public void setMarkkit(YamlConfiguration yaml);
 }

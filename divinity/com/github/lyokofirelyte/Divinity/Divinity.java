@@ -1,5 +1,6 @@
 package com.github.lyokofirelyte.Divinity;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -51,12 +52,15 @@ public class Divinity extends DivinityAPI {
 		for (DivinityModule module : modules){
 			module.onRegister();
 		}
+		
+		getSystem().setMarkkit(divManager.lc(new File(DivinityManager.sysDir + "markkit.yml")));
 	}
 	
 	@Override
 	public void onDisable(){
 		
 		try {
+			getSystem().getMarkkit().save(new File(DivinityManager.sysDir + "markkit.yml"));
 			divManager.save();
 		} catch (Exception e) {
 			e.printStackTrace();

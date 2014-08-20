@@ -70,12 +70,8 @@ public class DivinityManager {
 		return null;
 	}
 	
-	public List<DivinityPlayer> getAllUsers(){
-		List<DivinityPlayer> list = new ArrayList<>();
-		for (DivinityStorage ds : data.get(dir).values()){
-			list.add((DivinityPlayer)ds);
-		}
-		return list;
+	public Collection<DivinityStorage> getAllUsers(){
+		return data.get(dir).values();
 	}
 	
 	public Map<String, DivinityStorage> getMap(String directory){
@@ -86,7 +82,7 @@ public class DivinityManager {
 		return data.get(directory).containsKey(name) ? data.get(directory).get(name) : modifyObject(directory, name, true, true);
 	}
 	
-	private YamlConfiguration lc(File file){
+	public YamlConfiguration lc(File file){
 		return YamlConfiguration.loadConfiguration(file); 
 	}
 	
