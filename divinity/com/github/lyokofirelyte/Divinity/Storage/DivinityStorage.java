@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import com.github.lyokofirelyte.Divinity.Divinity;
+import com.github.lyokofirelyte.Divinity.DivinityUtils;
 import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
 
 public class DivinityStorage implements DivInfo {
@@ -215,27 +216,20 @@ public class DivinityStorage implements DivInfo {
 		public boolean isOnline(){
 			return Bukkit.getPlayer(uuid) != null;
 		}
-	}
-	
-	public class Skill extends DivinityStorage implements DivinitySkillPlayer {
-
-		public Skill(String n, Divinity i) {
-			super(n, i);
+		
+		public void s(String message){
+			if (isOnline()){
+				DivinityUtils.s(Bukkit.getPlayer(uuid), message);
+			}
 		}
-
-		public int getLevel(ElySkill skill){
-			return stuff.containsKey(skill.toString()) ? getInt(skill) : 0;
-		}
-	
-		public void setLevel(ElySkill skill, int level){
-			stuff.put(skill.toString(), level);
-		}
-	
-		public boolean hasLevel(ElySkill skill, int level){
-			return getLevel(skill) >= level;
+		
+		public void err(String message){
+			if (isOnline()){
+				DivinityUtils.s(Bukkit.getPlayer(uuid), "&c&o" + message);
+			}
 		}
 	}
-
+	
 	public class Ring extends DivinityStorage implements DivinityRing {
 		
 		public Ring(String n, Divinity i) {

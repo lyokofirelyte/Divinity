@@ -21,7 +21,6 @@ import com.github.lyokofirelyte.Divinity.Storage.DivinityAlliance;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRegion;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRing;
-import com.github.lyokofirelyte.Divinity.Storage.DivinitySkillPlayer;
 import com.github.lyokofirelyte.Divinity.Storage.DivinitySystem;
 
 public class Divinity extends DivinityAPI {
@@ -29,6 +28,7 @@ public class Divinity extends DivinityAPI {
 	public DivinityManager divManager;
 	public DivinityUtils divUtils;
 	public DivinityRegistry divReg;
+	public Reflections ref;
 	public FW fw;
 	
     public static Map <List<String>, Object> commandMap = new HashMap<>();
@@ -92,10 +92,6 @@ public class Divinity extends DivinityAPI {
 
 	public DivinityPlayer getDivPlayer(UUID player){
 		return (DivinityPlayer) divManager.searchForPlayer(player.toString());
-	}
-	
-	public DivinitySkillPlayer matchSkillPlayer(String player){
-		return (DivinitySkillPlayer) divManager.searchForPlayer(player);
 	}
 
 	public DivinityAlliance getDivAlliance(String alliance){
