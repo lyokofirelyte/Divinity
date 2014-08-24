@@ -84,7 +84,8 @@ public enum DPI {
 	GV4("GV4"),
 	GV5("GV5"),
 	CAST_PREFIX("CAST_PREFIX"),
-	CALENDAR_LINK("CALENDAR_LINK");
+	CALENDAR_LINK("CALENDAR_LINK"),
+	ENDERDRAGON_CD("ENDERDRAGON_CD");
 
 	DPI(String info){
 		this.info = info;

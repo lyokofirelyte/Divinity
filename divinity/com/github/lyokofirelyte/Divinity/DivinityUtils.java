@@ -54,26 +54,39 @@ public class DivinityUtils {
 		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 	
-	public static BlockFace getPlayerDirection(Player player) {
-		
-		List<BlockFace> faces = Arrays.asList(
-			BlockFace.WEST, BlockFace.WEST_NORTH_WEST, BlockFace.NORTH_NORTH_WEST,
-			BlockFace.NORTH, BlockFace.NORTH_NORTH_EAST, BlockFace.NORTH_EAST,
-			BlockFace.EAST_NORTH_EAST, BlockFace.EAST, BlockFace.EAST_SOUTH_EAST,
-			BlockFace.SOUTH_EAST,BlockFace.SOUTH_SOUTH_EAST, BlockFace.SOUTH, 
-			BlockFace.SOUTH_SOUTH_WEST, BlockFace.SOUTH_WEST, BlockFace.WEST_SOUTH_WEST, BlockFace.WEST
-		);
+    public static BlockFace getPlayerDirection(float direction){
 
-		float y = player.getLocation().getYaw();
-	     
-		if( y < 0 ){y += 360;}
-	     
-		y %= 360;
-	     
-		int i = (int)((y+8) / 22.5);
-		
-		return faces.get(i) != null ? faces.get(i) : BlockFace.WEST;
-	}
+        direction = direction % 360;
+
+        if(direction < 0){
+        	direction += 360;
+        }
+        
+        direction = Math.round(direction / 45);
+
+        switch((int)direction){
+
+            case 0:
+                return BlockFace.WEST;
+            case 1:
+                return BlockFace.NORTH_WEST;
+            case 2:
+                return BlockFace.NORTH;
+            case 3:
+                return BlockFace.NORTH_EAST;
+            case 4:
+                return BlockFace.EAST;
+            case 5:
+                return BlockFace.SOUTH_EAST;
+            case 6:
+                return BlockFace.SOUTH;
+            case 7:
+                return BlockFace.SOUTH_WEST;
+            default:
+                return BlockFace.WEST;
+
+        }
+    }
 	
 	public static void s(CommandSender sender, String message){
 		if (sender instanceof Player){

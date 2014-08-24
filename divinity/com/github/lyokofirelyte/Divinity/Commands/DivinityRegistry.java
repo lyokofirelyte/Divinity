@@ -102,7 +102,7 @@ public class DivinityRegistry implements CommandExecutor {
 						}*/
 						scm.register("ely", command);
 						command.setExecutor(this);
-						Divinity.commandMap.put(Arrays.asList(anno.aliases()), obj);
+						main.commandMap.put(Arrays.asList(anno.aliases()), obj);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -140,11 +140,11 @@ public class DivinityRegistry implements CommandExecutor {
 	    	}
     	}
     	
-    	for (List<String> cmdList : Divinity.commandMap.keySet()){
+    	for (List<String> cmdList : main.commandMap.keySet()){
     		if (cmdList.contains(label)){
     			for (String command : cmdList){
     				if (command.equals(label)){
-    					Object obj = Divinity.commandMap.get(cmdList);
+    					Object obj = main.commandMap.get(cmdList);
     					for (Method m : obj.getClass().getMethods()){
     						if (m.getAnnotation(DivCommand.class) != null && Arrays.asList(m.getAnnotation(DivCommand.class).aliases()).contains(command)){
     							try {

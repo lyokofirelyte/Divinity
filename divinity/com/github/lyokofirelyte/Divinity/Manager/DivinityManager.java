@@ -162,6 +162,8 @@ public class DivinityManager {
 			}
 		}
 		
+		api.getSystem().setMarkkit(lc(new File(DivinityManager.sysDir + "markkit.yml")));
+		
 		DivinityUtils.bc("Divinity has reloaded.");
 		DivinityUtils.bc("&7&o" + getAllUsers().size() + " users, " + getMap(allianceDir).size() + " alliances, and " + getMap(regionsDir).size() + " regions.");
 	}

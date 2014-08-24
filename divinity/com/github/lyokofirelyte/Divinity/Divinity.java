@@ -31,7 +31,7 @@ public class Divinity extends DivinityAPI {
 	public Reflections ref;
 	public FW fw;
 	
-    public static Map <List<String>, Object> commandMap = new HashMap<>();
+    public Map <List<String>, Object> commandMap = new HashMap<>();
     public Map<String, Integer> activeTasks = new HashMap<String, Integer>();
 	
 	@Override
@@ -52,8 +52,6 @@ public class Divinity extends DivinityAPI {
 		for (DivinityModule module : modules){
 			module.onRegister();
 		}
-		
-		getSystem().setMarkkit(divManager.lc(new File(DivinityManager.sysDir + "markkit.yml")));
 	}
 	
 	@Override
