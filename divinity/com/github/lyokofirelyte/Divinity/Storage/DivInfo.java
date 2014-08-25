@@ -25,7 +25,7 @@ public interface DivInfo {
 	
 	public Location getLoc(Enum<?> i);
 	
-	public ItemStack[] getStack(Enum<?> i);
+	public List<ItemStack> getStack(Enum<?> i);
 	
 	public void set(Enum<?> i, Object infos);
 }

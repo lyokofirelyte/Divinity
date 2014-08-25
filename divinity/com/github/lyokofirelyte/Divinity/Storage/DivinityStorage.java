@@ -180,20 +180,20 @@ public class DivinityStorage implements DivInfo {
 		return new Location(Bukkit.getWorld("world"), 0, 0, 0);
 	}
 	
-	public ItemStack[] getStack(Enum<?> i){
+	public List<ItemStack> getStack(Enum<?> i){
 		
-		ItemStack[] inv = null;
+		List<ItemStack> inv = null;
 		
 		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof ItemStack[]){
-				inv = (ItemStack[]) stuff.get(i.toString());
+			if (stuff.get(i.toString()) instanceof List<?>){
+				inv = (List<ItemStack>) stuff.get(i.toString());
 			} else {
-				stuff.put(i.toString(), new ItemStack[]{});
-				inv = new ItemStack[]{};
+				stuff.put(i.toString(), new ArrayList<ItemStack>());
+				inv = new ArrayList<ItemStack>();
 			}
 		} else {
-			stuff.put(i.toString(), new ItemStack[]{});
-			inv = new ItemStack[]{};
+			stuff.put(i.toString(), new ArrayList<ItemStack>());
+			inv = new ArrayList<ItemStack>();
 		}
 		
 		return inv;

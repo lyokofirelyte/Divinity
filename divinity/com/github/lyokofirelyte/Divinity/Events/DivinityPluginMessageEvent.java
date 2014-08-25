@@ -4,15 +4,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
+import com.github.lyokofirelyte.Divinity.JSON.JSONChatMessage;
+
 public class DivinityPluginMessageEvent extends DivinityEventHandler {
 	
 	private boolean cancelled = false;
     private static final HandlerList handlers = new HandlerList();
     private CommandSender commandSender;
     private Player p;
-    private String message;
     private String type;
     private String[] extras;
+    private JSONChatMessage jsonMessage;
 
     public DivinityPluginMessageEvent(CommandSender p, String type) {
         commandSender = p;
@@ -20,6 +22,13 @@ public class DivinityPluginMessageEvent extends DivinityEventHandler {
         	this.p = (Player) p;
         }
         this.type = type;
+    }
+    
+    public DivinityPluginMessageEvent(Player p, JSONChatMessage msg) {
+        commandSender = p;
+        this.p = (Player) p;
+        this.type = "JSON";
+        jsonMessage = msg;
     }
     
     public DivinityPluginMessageEvent(CommandSender p, String type, String[] extras) {
@@ -39,6 +48,10 @@ public class DivinityPluginMessageEvent extends DivinityEventHandler {
 	@Override
 	public boolean isCancelled() {
 		return cancelled;
+	}
+	
+	public boolean isJson(){
+		return jsonMessage != null;
 	}
 
 	@Override
@@ -62,16 +75,12 @@ public class DivinityPluginMessageEvent extends DivinityEventHandler {
 		return commandSender;
 	}
 	
-	public String getMessage(){
-		return message;
+	public JSONChatMessage getJSONMessage(){
+		return jsonMessage;
 	}
 	
 	public String getType(){
 		return type;
-	}
-	
-	public void setMessage(String m){
-		message = m;
 	}
 	
 	public void setType(String t){
