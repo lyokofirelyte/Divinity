@@ -85,6 +85,17 @@ public class DivinityManager {
 	@SuppressWarnings("rawtypes")
 	private DivinityStorage modifyObject(String directory, String name, boolean newFile, boolean load){
 		
+		if (directory.equals(dir)){
+			try {
+				UUID u = UUID.fromString(name);
+			} catch (Exception e){
+				if (new File(directory + name + ".yml").exists()){
+					new File(directory + name + ".yml").delete();
+				}
+				return null;
+			}
+		}
+		
 		File file = new File(directory + name + ".yml");
 		
 		if (!Arrays.asList(new File(directory).list()).contains(name + ".yml") && load){

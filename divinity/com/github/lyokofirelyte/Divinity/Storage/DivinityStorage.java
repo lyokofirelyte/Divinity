@@ -182,21 +182,16 @@ public class DivinityStorage implements DivInfo {
 	
 	public List<ItemStack> getStack(Enum<?> i){
 		
-		List<ItemStack> inv = null;
-		
 		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof List<?>){
-				inv = (List<ItemStack>) stuff.get(i.toString());
-			} else {
-				stuff.put(i.toString(), new ArrayList<ItemStack>());
-				inv = new ArrayList<ItemStack>();
+			if (stuff.get(i.toString()) instanceof List){
+				return (List<ItemStack>) stuff.get(i.toString());
 			}
+			stuff.put(i.toString(), new ArrayList<ItemStack>());
 		} else {
 			stuff.put(i.toString(), new ArrayList<ItemStack>());
-			inv = new ArrayList<ItemStack>();
 		}
 		
-		return inv;
+		return (List<ItemStack>) stuff.get(i.toString());
 	}
 	
 	public void set(Enum<?> i, Object infos){
