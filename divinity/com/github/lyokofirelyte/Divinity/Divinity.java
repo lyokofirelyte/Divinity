@@ -17,6 +17,8 @@ import org.reflections.Reflections;
 import com.github.lyokofirelyte.Divinity.Commands.DivinityRegistry;
 import com.github.lyokofirelyte.Divinity.JSON.FW;
 import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
+import com.github.lyokofirelyte.Divinity.Manager.PlayerLocation;
+import com.github.lyokofirelyte.Divinity.Manager.TitleExtractor;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityAlliance;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRegion;
@@ -28,6 +30,9 @@ public class Divinity extends DivinityAPI {
 	public DivinityManager divManager;
 	public DivinityUtils divUtils;
 	public DivinityRegistry divReg;
+	
+	public PlayerLocation playerLocation;
+	public TitleExtractor title;
 	public Reflections ref;
 	public FW fw;
 	
@@ -40,6 +45,8 @@ public class Divinity extends DivinityAPI {
 		divManager = new DivinityManager(this);
 		divUtils = new DivinityUtils(this);
 		divReg = new DivinityRegistry(this);
+		title = new TitleExtractor(this);
+		playerLocation = new PlayerLocation(this);
 		fw = new FW(this);
 		registerEnums();
 		
@@ -93,15 +100,15 @@ public class Divinity extends DivinityAPI {
 	}
 
 	public DivinityAlliance getDivAlliance(String alliance){
-		return (DivinityAlliance) divManager.getStorage(DivinityManager.allianceDir, alliance);
+		return (DivinityAlliance) divManager.getStorage(DivinityManager.allianceDir, alliance.toLowerCase());
 	}
 	
 	public DivinityRegion getDivRegion(String region){
-		return (DivinityRegion) divManager.getStorage(DivinityManager.regionsDir, region);
+		return (DivinityRegion) divManager.getStorage(DivinityManager.regionsDir, region.toLowerCase());
 	}
 	
 	public DivinityRing getDivRing(String ring){
-		return (DivinityRing) divManager.getStorage(DivinityManager.ringsDir, ring);
+		return (DivinityRing) divManager.getStorage(DivinityManager.ringsDir, ring.toLowerCase());
 	}
 	
 	public DivinitySystem getSystem(){

@@ -11,6 +11,7 @@ public enum DAI {
 	COLOR_1("COLOR_1"),
 	COLOR_2("COLOR_2"),
 	LEADER("LEADER"),
+	DESC("DESC"),
 	CENTER("CENTER");
 
 	DAI(String info){

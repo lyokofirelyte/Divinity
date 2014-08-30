@@ -20,26 +20,21 @@
 		</repository>
 	</distributionManagement>
 	<dependencies>
-	     <dependency>
+		<dependency>
+			<groupId>com.maxmind.geoip2</groupId>
+			<artifactId>geoip2</artifactId>
+			<version>0.8.1</version>
+		</dependency>
+	    <dependency>
          	<groupId>org.reflections</groupId>
          	<artifactId>reflections</artifactId>
         	<version>0.9.9-RC1</version>
-    	 </dependency>
-    	 <dependency>  
-            <groupId>javassist</groupId>  
-            <artifactId>javassist</artifactId>  
-            <version>3.12.1.GA</version>  
-        </dependency> 
+    	</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
 			<version>${bukkit}</version>
 		</dependency>
-		<dependency>
-        	<groupId>com.dsh105</groupId>
-        	<artifactId>HoloAPI</artifactId>
-        	<version>1.0.7</version>
-   		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
  			<artifactId>craftbukkit</artifactId>
@@ -51,10 +46,6 @@
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/repositories/snapshots/</url>
 		</repository>
-		<repository>
-        	<id>hawk-repo</id>
-        	<url>http://ci.hawkfalcon.com/plugin/repository/everything/</url>
-   		</repository>
 	</repositories>
 	<build>
 		<sourceDirectory>divinity</sourceDirectory>
@@ -71,10 +62,12 @@
        			 <version>2.3</version>
        			 <configuration>
        			 	<artifactSet>
- 				 		<includes>
-    						<include>org.reflections:*</include>
-    						<include>javassist:*</include>
-  						</includes>
+ 				 		<excludes>
+    						<exclude>org.bukkit:*</exclude>
+    						<exclude>com.google:*</exclude>
+    						<exclude>com.dom4j:*</exclude>
+    						<exclude>xml-apis.xml-apis:*</exclude>
+  						</excludes>
 					</artifactSet>
 				</configuration>
         		<executions>

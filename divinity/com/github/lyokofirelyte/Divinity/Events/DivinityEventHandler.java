@@ -5,5 +5,5 @@ import org.bukkit.event.Event;
 public abstract class DivinityEventHandler extends Event {
 
     public abstract void setCancelled(boolean cancel);
-    public abstract boolean isCancelled();  
+    public abstract boolean isCancelled();
 }

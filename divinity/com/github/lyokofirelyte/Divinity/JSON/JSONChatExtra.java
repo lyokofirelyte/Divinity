@@ -1,26 +1,19 @@
 package com.github.lyokofirelyte.Divinity.JSON;
 
-
-import java.util.List;
-
 public class JSONChatExtra {
 	
     private JSONObject chatExtra;
 
-    public JSONChatExtra(String text, JSONChatColor color, List<JSONChatFormat> formats) {
+    public JSONChatExtra(String text, Object nothing1, Object nothing2) {
     	
         chatExtra = new JSONObject();
         chatExtra.put("text", text);
-        
-        if (color != null){
-        	chatExtra.put("color", color.getColorString());
-        }
-        
-        if (formats != null){
-        	for (JSONChatFormat format : formats) {
-        		chatExtra.put(format.getFormatString(), true);
-        	}
-        }
+    }
+    
+    public JSONChatExtra(String text) {
+    	
+        chatExtra = new JSONObject();
+        chatExtra.put("text", text);
     }
 
     public void setClickEvent(JSONChatClickEventType action, String value) {

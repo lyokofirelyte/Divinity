@@ -167,7 +167,7 @@ public class DivinityManager {
 			}
 			
 			for (String file : new File(d).list()){
-				if (!file.contains("~")){
+				if (!file.contains("~") && file.contains(".yml")){
 					modifyObject(d, file.replace(".yml", ""), false, true);
 				}
 			}

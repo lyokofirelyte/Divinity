@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import com.github.lyokofirelyte.Divinity.Divinity;
 import com.github.lyokofirelyte.Divinity.DivinityUtils;
 import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
+import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 
 public class DivinityStorage implements DivInfo {
 
@@ -180,6 +181,7 @@ public class DivinityStorage implements DivInfo {
 		return new Location(Bukkit.getWorld("world"), 0, 0, 0);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<ItemStack> getStack(Enum<?> i){
 		
 		if (stuff.containsKey(i.toString())){
@@ -210,6 +212,22 @@ public class DivinityStorage implements DivInfo {
 		
 		public boolean isOnline(){
 			return Bukkit.getPlayer(uuid) != null;
+		}
+		
+		public int getLevel(ElySkill skill){
+			return Integer.parseInt(getStr(skill).split(" ")[0].replace("none", "0"));
+		}
+		
+		public int getXP(ElySkill skill){
+			return Integer.parseInt(getStr(skill).split(" ")[1].replace("none", "0"));
+		}
+		
+		public int getNeededXP(ElySkill skill){
+			return Integer.parseInt(getStr(skill).split(" ")[2].replace("none", "0").split("\\.")[0]);
+		}
+		
+		public boolean hasLevel(ElySkill skill, int level){
+			return Integer.parseInt(getStr(skill).split(" ")[0].replace("none", "0")) >= level;
 		}
 		
 		public void s(String message){
@@ -335,7 +353,7 @@ public class DivinityStorage implements DivInfo {
 			
 			DivinityPlayer dp = api.getDivPlayer(p);
 			
-			for (String perm : getList(DRI.PERMS)){
+			for (String perm : (List<String>)getList(DRI.PERMS)){
 				if (dp.getList(DPI.PERMS).contains(perm)){
 					return true;
 				}

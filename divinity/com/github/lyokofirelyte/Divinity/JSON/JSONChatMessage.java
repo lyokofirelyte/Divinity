@@ -13,20 +13,16 @@ public class JSONChatMessage {
 	
     private JSONObject chatObject;
 
-    public JSONChatMessage(String text, JSONChatColor color, List<JSONChatFormat> formats) {
+    public JSONChatMessage(String text, Object nothing1, Object nothing2) {
     	
         chatObject = new JSONObject();
         chatObject.put("text", text);
-        
-        if (color != null) {
-            chatObject.put("color", color.getColorString());
-        }
-        
-        if (formats != null) {
-            for (JSONChatFormat format : formats) {
-                chatObject.put(format.getFormatString(), true);
-            }
-        }
+    }
+    
+    public JSONChatMessage(String text) {
+    	
+        chatObject = new JSONObject();
+        chatObject.put("text", text);
     }
 
     public void addExtra(JSONChatExtra extraObject) {

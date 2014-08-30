@@ -28,10 +28,12 @@
         </executions>
         <configuration>
           <artifactSet>
-            <includes>
-              <include>org.reflections:*</include>
-              <include>javassist:*</include>
-            </includes>
+            <excludes>
+              <exclude>org.bukkit:*</exclude>
+              <exclude>com.google:*</exclude>
+              <exclude>com.dom4j:*</exclude>
+              <exclude>xml-apis.xml-apis:*</exclude>
+            </excludes>
           </artifactSet>
         </configuration>
       </plugin>
@@ -50,22 +52,12 @@
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/repositories/snapshots/</url>
     </repository>
-    <repository>
-      <id>hawk-repo</id>
-      <url>http://ci.hawkfalcon.com/plugin/repository/everything/</url>
-    </repository>
   </repositories>
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
       <version>1.7.8-R0.1-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.dsh105</groupId>
-      <artifactId>HoloAPI</artifactId>
-      <version>1.0.7</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
