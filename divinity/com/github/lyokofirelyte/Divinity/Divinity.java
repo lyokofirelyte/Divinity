@@ -115,10 +115,6 @@ public class Divinity extends DivinityAPI {
 		return (DivinitySystem) divManager.getStorage(DivinityManager.sysDir, "system");
 	}
 	
-	public DivinitySystem getMarkkit(){
-		return (DivinitySystem) divManager.getStorage(DivinityManager.sysDir, "markkit");
-	}
-	
 	public String AS(String s){
 		return ChatColor.translateAlternateColorCodes('&', s);
 	}
