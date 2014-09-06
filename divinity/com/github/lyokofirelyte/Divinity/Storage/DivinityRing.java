@@ -1,28 +1,62 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
 import java.util.List;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
-public interface DivinityRing extends DivInfo {
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
+import com.github.lyokofirelyte.Divinity.Divinity;
+
+public class DivinityRing extends DivinityStorage  {
 	
-	public String getDest();
+	public DivinityRing(String n, Divinity i) {
+		super(n, i);
+	}
+
+	private List<org.bukkit.entity.Player> players;
+	private boolean inOperation = false;
 	
-	public String[] getCenter();
+	public String[] getCenter(){
+		return getStr(DRS.CENTER).split(" ");
+	}
 	
-	public Location getCenterLoc();
+	public String getDest(){
+		return getStr(DRS.DEST);
+	}
 	
-	public boolean isInOperation();
+	public Location getCenterLoc(){
+		return new Location(Bukkit.getWorld(getCenter()[0]), Double.parseDouble(getCenter()[1]), Double.parseDouble(getCenter()[2]), Double.parseDouble(getCenter()[3]), Float.parseFloat(getCenter()[4]), Float.parseFloat(getCenter()[5]));
+	}
 	
-	public int getMatId();
+	public boolean isInOperation(){
+		return inOperation;
+	}
 	
-	public byte getMatByte();
+	public int getMatId(){
+		return getInt(DRS.MAT_ID);
+	}
 	
-	public List<Player> getPlayers();
+	public byte getMatByte(){
+		return getByte(DRS.BYTE_ID);
+	}
 	
-	public void addPlayer(Player name);
+	public List<org.bukkit.entity.Player> getPlayers(){
+		return players;
+	}
 	
-	public void remPlayer(Player name);
+	public void addPlayer(org.bukkit.entity.Player name){
+		if (!players.contains(name)){
+			players.add(name);
+		}
+	}
 	
-	public void setInOperation(boolean a);
+	public void remPlayer(org.bukkit.entity.Player name){
+		if (players.contains(name)){
+			players.remove(name);
+		}
+	}
+	
+	public void setInOperation(boolean b){
+		inOperation = b;
+	}
 }

@@ -52,6 +52,13 @@
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/repositories/snapshots/</url>
     </repository>
+    <repository>
+      <snapshots>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <id>TeamSpeak-3-Java-API-mvn-repo</id>
+      <url>https://raw.githubusercontent.com/TheHolyWaffle/TeamSpeak-3-Java-API/mvn-repo/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>

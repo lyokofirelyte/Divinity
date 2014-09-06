@@ -1,6 +1,15 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
-public interface DivinityAlliance extends DivInfo {
+import com.github.lyokofirelyte.Divinity.Divinity;
+import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
+
+public class DivinityAlliance extends DivinityStorage {
 	
-	public boolean exists();
+	public DivinityAlliance(String n, Divinity i) {
+		super(n, i);
+	}
+
+	public boolean exists(){
+		return api.divManager.getMap(DivinityManager.allianceDir).containsKey(name());
+	}
 }

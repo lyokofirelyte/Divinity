@@ -40,12 +40,25 @@
  			<artifactId>craftbukkit</artifactId>
  			<version>${craftbukkit}</version>
  		</dependency>
+ 		<dependency>
+            <groupId>com.github.theholywaffle</groupId>
+            <artifactId>teamspeak3-api</artifactId>
+            <version>[1.0.0,2.0.0)</version>
+        </dependency> 
 	</dependencies>
 	<repositories>
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/repositories/snapshots/</url>
 		</repository>
+		<repository>
+            <id>TeamSpeak-3-Java-API-mvn-repo</id>
+            <url>https://raw.githubusercontent.com/TheHolyWaffle/TeamSpeak-3-Java-API/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
 	</repositories>
 	<build>
 		<sourceDirectory>divinity</sourceDirectory>

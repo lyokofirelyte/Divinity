@@ -17,8 +17,13 @@ import com.github.lyokofirelyte.Divinity.Divinity;
 import com.github.lyokofirelyte.Divinity.DivinityUtils;
 import com.github.lyokofirelyte.Divinity.Storage.DPI;
 import com.github.lyokofirelyte.Divinity.Storage.DivStorageModule;
+import com.github.lyokofirelyte.Divinity.Storage.DivinityAlliance;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
+import com.github.lyokofirelyte.Divinity.Storage.DivinityRegion;
+import com.github.lyokofirelyte.Divinity.Storage.DivinityRing;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityStorage;
+import com.github.lyokofirelyte.Divinity.Storage.DivinityGame;
+import com.github.lyokofirelyte.Divinity.Storage.DivinitySystem;
 
 public class DivinityManager {
 
@@ -32,13 +37,14 @@ public class DivinityManager {
 	public Map<String, Map<String, DivinityStorage>> data = new HashMap<>();
 	public List<Class<? extends Enum>> enums = new ArrayList<>();
 	
-	private List<String> dirs = Arrays.asList(dir, allianceDir, regionsDir, ringsDir, sysDir);
+	private List<String> dirs = Arrays.asList(dir, allianceDir, regionsDir, ringsDir, sysDir, gamesDir);
 	
 	final static public String sysDir = "./plugins/Divinity/system/";
 	final static public String dir = "./plugins/Divinity/users/";
 	final static public String allianceDir = "./plugins/Divinity/alliances/";
 	final static public String regionsDir = "./plugins/Divinity/regions/";
 	final static public String ringsDir = "./plugins/Divinity/rings/";
+	final static public String gamesDir = "./plugins/Divinity/games/";
 	
 	public DivinityPlayer searchForPlayer(String s){
 
@@ -83,7 +89,7 @@ public class DivinityManager {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	private DivinityStorage modifyObject(String directory, String name, boolean newFile, boolean load){
+	public DivinityStorage modifyObject(String directory, String name, boolean newFile, boolean load){
 		
 		if (directory.equals(dir)){
 			try {
@@ -94,6 +100,10 @@ public class DivinityManager {
 				}
 				return null;
 			}
+		}
+		
+		if (!new File(directory).exists()){
+			new File(directory).mkdirs();
 		}
 		
 		File file = new File(directory + name + ".yml");
@@ -107,32 +117,44 @@ public class DivinityManager {
 		
 		if (load){
 			switch (directory){
-				case dir: storage = newFile ? newUser(storage.new Player(storage.uuid(), api)) : storage.new Player(storage.uuid(), api); break;
-				case allianceDir: storage = storage.new Alliance(name, api); break;
-				case regionsDir: storage = storage.new Region(name, api); break;
-				case ringsDir: storage = storage.new Ring(name, api); break;
-				case sysDir: storage = storage.new System(name, api); break;
+				case dir: storage = newFile ? newUser(new DivinityPlayer(storage.uuid(), api)) : new DivinityPlayer(storage.uuid(), api); break;
+				case allianceDir: storage = new DivinityAlliance(name, api); break;
+				case regionsDir: storage = new DivinityRegion(name, api); break;
+				case ringsDir: storage = new DivinityRing(name, api); break;
+				case sysDir: storage = new DivinitySystem(name, api); break;
+				case gamesDir: storage = new DivinityGame("system", name, api);
+
+				default:
+					if (directory.startsWith(gamesDir)){
+						storage = new DivinityGame(directory.split("\\/")[3], name, api);
+					}
+				break;
 			}
 		}
 		
 		try {
 
 			for (Class<? extends Enum> enumClass : enums){
-				if (enumClass.getMethod("s", null).getAnnotation(DivStorageModule.class) != null && Arrays.asList(enumClass.getMethod("s", null).getAnnotation(DivStorageModule.class).types()).contains(directory)){
-					for (Enum<?> enumValue : enumClass.getEnumConstants()){
-						if (load){
-							if (yaml.contains(enumValue.toString())){
-								storage.set(enumValue, yaml.get(enumValue.toString()));
-							}
-						} else {
-							if (storage.getRawInfo(enumValue) != null || (storage instanceof DivinityStorage.Region && ((DivinityStorage.Region)storage).getFlags().containsKey(enumValue))){
-								if (storage.getRawInfo(enumValue) instanceof Location){
-									Location l = (Location) storage.getRawInfo(enumValue);
-									yaml.set(enumValue.toString(), l.getWorld().getName() + " " + l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ() + " " + l.getPitch() + " " + l.getYaw());
+				if (enumClass.getMethod("s", null).getAnnotation(DivStorageModule.class) != null){
+					for (String type : Arrays.asList(enumClass.getMethod("s", null).getAnnotation(DivStorageModule.class).types())){
+						if (directory.startsWith(type)){
+							for (Enum<?> enumValue : enumClass.getEnumConstants()){
+								if (load){
+									if (yaml.contains(enumValue.toString())){
+										storage.set(enumValue, yaml.get(enumValue.toString()));
+									}
 								} else {
-									yaml.set(enumValue.toString(), storage.getRawInfo(enumValue));
+									if (storage.getRawInfo(enumValue) != null || (storage instanceof DivinityRegion && ((DivinityRegion)storage).getFlags().containsKey(enumValue))){
+										if (storage.getRawInfo(enumValue) instanceof Location){
+											Location l = (Location) storage.getRawInfo(enumValue);
+											yaml.set(enumValue.toString(), l.getWorld().getName() + " " + l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ() + " " + l.getPitch() + " " + l.getYaw());
+										} else {
+											yaml.set(enumValue.toString(), storage.getRawInfo(enumValue));
+										}
+									}
 								}
 							}
+							break;
 						}
 					}
 				}
@@ -141,6 +163,9 @@ public class DivinityManager {
 		} catch (Exception e){}
 		
 		if (load){
+			if (!data.containsKey(directory)){
+				data.put(directory, new HashMap<String, DivinityStorage>());
+			}
 			data.get(directory).put(name, storage);
 		} else {
 			try { yaml.save(file); } catch (Exception e){}
@@ -149,7 +174,7 @@ public class DivinityManager {
 		return storage;
 	}
 	
-	private DivinityStorage.Player newUser(DivinityStorage.Player player){
+	private DivinityPlayer newUser(DivinityPlayer player){
 
 		DivinityUtils.bc("Welcome &6" + player.name() + " &bto Worlds Apart!");
 		Bukkit.getPlayer(player.uuid()).setDisplayName("&7" + player.name());
@@ -158,25 +183,40 @@ public class DivinityManager {
 		return player;
 	}
 	
-	public void load() throws Exception {
+	public void load(boolean full) throws Exception {
+		
+		if (full){
 
-		for (String d : dirs){
-			
-			if (!new File(d).exists()){
-				new File(d).mkdirs();
+			for (String d : dirs){
+				
+				if (!new File(d).exists()){
+					new File(d).mkdirs();
+				}
+				
+				for (String file : new File(d).list()){
+					if (!file.contains("~") && file.contains(".yml")){
+						modifyObject(d, file.replace(".yml", ""), false, true);
+					}
+				}
 			}
 			
-			for (String file : new File(d).list()){
-				if (!file.contains("~") && file.contains(".yml")){
-					modifyObject(d, file.replace(".yml", ""), false, true);
+			DivinityUtils.bc("Divinity has reloaded.");
+			DivinityUtils.bc("&7&o" + getAllUsers().size() + " users, " + getMap(allianceDir).size() + " alliances, and " + getMap(regionsDir).size() + " regions.");
+			
+		} else {
+			
+			for (String gameFolder : new File(gamesDir).list()){
+				if (new File(gamesDir + gameFolder).isDirectory()){
+					for (String gameFile : new File(gamesDir + gameFolder + "/").list()){
+						modifyObject(gamesDir + gameFolder + "/", gameFile.replace(".yml", ""), false, true);
+					}
+				} else if (gameFolder.contains(".yml")){
+					modifyObject(gamesDir, gameFolder.replace(".yml", ""), false, true);
 				}
 			}
 		}
 		
 		api.getSystem().setMarkkit(lc(new File(DivinityManager.sysDir + "markkit.yml")));
-		
-		DivinityUtils.bc("Divinity has reloaded.");
-		DivinityUtils.bc("&7&o" + getAllUsers().size() + " users, " + getMap(allianceDir).size() + " alliances, and " + getMap(regionsDir).size() + " regions.");
 	}
 	
 	public void save() throws IOException {

@@ -18,7 +18,10 @@ import com.github.lyokofirelyte.Divinity.Commands.DivinityRegistry;
 import com.github.lyokofirelyte.Divinity.JSON.FW;
 import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
 import com.github.lyokofirelyte.Divinity.Manager.PlayerLocation;
+import com.github.lyokofirelyte.Divinity.Manager.TeamspeakManager;
 import com.github.lyokofirelyte.Divinity.Manager.TitleExtractor;
+import com.github.lyokofirelyte.Divinity.Manager.WebsiteManager;
+import com.github.lyokofirelyte.Divinity.Storage.DAI;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityAlliance;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRegion;
@@ -31,6 +34,8 @@ public class Divinity extends DivinityAPI {
 	public DivinityUtils divUtils;
 	public DivinityRegistry divReg;
 	
+	public WebsiteManager web;
+	public TeamspeakManager ts3;
 	public PlayerLocation playerLocation;
 	public TitleExtractor title;
 	public Reflections ref;
@@ -38,6 +43,8 @@ public class Divinity extends DivinityAPI {
 	
     public Map <List<String>, Object> commandMap = new HashMap<>();
     public Map<String, Integer> activeTasks = new HashMap<String, Integer>();
+    
+    private boolean loaded = false;
 	
 	@Override
 	public void onEnable(){
@@ -47,18 +54,16 @@ public class Divinity extends DivinityAPI {
 		divReg = new DivinityRegistry(this);
 		title = new TitleExtractor(this);
 		playerLocation = new PlayerLocation(this);
+		ts3 = new TeamspeakManager(this);
 		fw = new FW(this);
 		registerEnums();
-		
-		try {
-			divManager.load();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+		ts3.start();
+
 		for (DivinityModule module : modules){
 			module.onRegister();
 		}
+		
+		load();
 	}
 	
 	@Override
@@ -76,6 +81,15 @@ public class Divinity extends DivinityAPI {
 		}
 		
 		Bukkit.getScheduler().cancelTasks(this);
+	}
+	
+	public void load(){
+		
+		try {
+			divManager.load(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void registerEnums(){

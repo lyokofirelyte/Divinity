@@ -1,40 +1,88 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
-public interface DivinityRegion extends DivInfo {
+import com.github.lyokofirelyte.Divinity.Divinity;
 
-	public String name();
+public class DivinityRegion extends DivinityStorage {
 	
-	public int getPriority();
+	public DivinityRegion(String n, Divinity i) {
+		super(n, i);
+	}
+
+	public int getPriority(){
+		return getInt(DRI.PRIORITY);
+	}
 	
-	public int getLength();
+	public int getLength(){
+		return getInt(DRI.LENGTH);
+	}
 	
-	public int getWidth();
+	public int getWidth(){
+		return getInt(DRI.WIDTH);
+	}
 	
-	public int getHeight();
+	public int getHeight(){
+		return getInt(DRI.HEIGHT);
+	}
 	
-	public int getArea();
+	public int getArea(){
+		return getInt(DRI.AREA);
+	}
 	
-	public String getMaxBlock();
+	public String getMaxBlock(){
+		return getStr(DRI.MAX_BLOCK);
+	}
 	
-	public String getMinBlock();
+	public String getMinBlock(){
+		return getStr(DRI.MIN_BLOCK);
+	}
 	
-	public boolean isDisabled();
+	public boolean isDisabled(){
+		return getBool(DRI.DISABLED);
+	}
 	
-	public boolean getFlag(DRF flag);
+	public boolean getFlag(DRF flag){
+		return getBool(flag);
+	}
 	
-	public boolean canBuild(Player p);
+	public Map<DRF, Boolean> getFlags(){
+		Map<DRF, Boolean> flagMap = new HashMap<>();
+		for (DRF f : DRF.values()){
+			if (stuff.containsKey(f.toString())){
+				flagMap.put(f, getBool(f));
+			}
+		}
+		return flagMap;
+	}
 	
-	public World world();
-	
-	public String getWorld();
-	
-	public List<String> getPerms();
-	
-	public Map<DRF, Boolean> getFlags();
+	public boolean canBuild(org.bukkit.entity.Player p){
+		
+		DivinityPlayer dp = api.getDivPlayer(p);
+		
+		for (String perm : (List<String>)getList(DRI.PERMS)){
+			if (dp.getList(DPI.PERMS).contains(perm)){
+				return true;
+			}
+		}
+		
+		return getBool(DRI.DISABLED) ? true : false;
+	}
+
+	public World world() {
+		return Bukkit.getWorld(getStr(DRI.WORLD));
+	}
+
+	public String getWorld() {
+		return getStr(DRI.WORLD);
+	}
+
+	public List<String> getPerms() {
+		return getList(DRI.PERMS);
+	}	
 }

@@ -8,19 +8,17 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import com.github.lyokofirelyte.Divinity.Divinity;
-import com.github.lyokofirelyte.Divinity.DivinityUtils;
-import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
-import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 
-public class DivinityStorage implements DivInfo {
+public class DivinityStorage {
 
-	private Divinity api;
-	private UUID uuid;
+	public Divinity api;
+	public UUID uuid;
+	
 	private String name;
+	private String gameName;
+	private boolean isGame = false;
 	
 	public DivinityStorage(UUID u, Divinity i){
 		api = i;
@@ -33,6 +31,13 @@ public class DivinityStorage implements DivInfo {
 		name = n;
 	}
 	
+	public DivinityStorage(String gameType, String n, Divinity i){
+		gameName = gameType;
+		name = n;
+		api = i;
+		isGame = true;
+	}
+	
 	public Map<String, Object> stuff = new HashMap<String, Object>();
 	
 	public String name(){
@@ -41,6 +46,18 @@ public class DivinityStorage implements DivInfo {
 	
 	public UUID uuid(){
 		return uuid;
+	}
+	
+	public Divinity api(){
+		return api;
+	}
+	
+	public boolean isGame(){
+		return isGame;
+	}
+	
+	public String gameName(){
+		return isGame ? gameName : "none";
 	}
 	
 	public Object getRawInfo(Enum<?> i){
@@ -198,210 +215,5 @@ public class DivinityStorage implements DivInfo {
 	
 	public void set(Enum<?> i, Object infos){
 		stuff.put(i.toString(), infos);
-	}
-	
-	public class Player extends DivinityStorage implements DivinityPlayer {
-
-		public Player(UUID n, Divinity i) {
-			super(n, i);
-		}
-		
-		public UUID uuid(){
-			return uuid;
-		}
-		
-		public boolean isOnline(){
-			return Bukkit.getPlayer(uuid) != null;
-		}
-		
-		public int getLevel(ElySkill skill){
-			return Integer.parseInt(getStr(skill).split(" ")[0].replace("none", "0"));
-		}
-		
-		public int getXP(ElySkill skill){
-			return Integer.parseInt(getStr(skill).split(" ")[1].replace("none", "0"));
-		}
-		
-		public int getNeededXP(ElySkill skill){
-			return Integer.parseInt(getStr(skill).split(" ")[2].replace("none", "0").split("\\.")[0]);
-		}
-		
-		public boolean hasLevel(ElySkill skill, int level){
-			return Integer.parseInt(getStr(skill).split(" ")[0].replace("none", "0")) >= level;
-		}
-		
-		public void s(String message){
-			if (isOnline()){
-				DivinityUtils.s(Bukkit.getPlayer(uuid), message);
-			}
-		}
-		
-		public void err(String message){
-			if (isOnline()){
-				DivinityUtils.s(Bukkit.getPlayer(uuid), "&c&o" + message);
-			}
-		}
-	}
-	
-	public class Ring extends DivinityStorage implements DivinityRing {
-		
-		public Ring(String n, Divinity i) {
-			super(n, i);
-		}
-
-		private List<org.bukkit.entity.Player> players;
-		private boolean inOperation = false;
-		
-		public String[] getCenter(){
-			return getStr(DRS.CENTER).split(" ");
-		}
-		
-		public String getDest(){
-			return getStr(DRS.DEST);
-		}
-		
-		public Location getCenterLoc(){
-			return new Location(Bukkit.getWorld(getCenter()[0]), Double.parseDouble(getCenter()[1]), Double.parseDouble(getCenter()[2]), Double.parseDouble(getCenter()[3]), Float.parseFloat(getCenter()[4]), Float.parseFloat(getCenter()[5]));
-		}
-		
-		public boolean isInOperation(){
-			return inOperation;
-		}
-		
-		public int getMatId(){
-			return getInt(DRS.MAT_ID);
-		}
-		
-		public byte getMatByte(){
-			return getByte(DRS.BYTE_ID);
-		}
-		
-		public List<org.bukkit.entity.Player> getPlayers(){
-			return players;
-		}
-		
-		public void addPlayer(org.bukkit.entity.Player name){
-			if (!players.contains(name)){
-				players.add(name);
-			}
-		}
-		
-		public void remPlayer(org.bukkit.entity.Player name){
-			if (players.contains(name)){
-				players.remove(name);
-			}
-		}
-		
-		public void setInOperation(boolean b){
-			inOperation = b;
-		}
-	}
-	
-	public class Region extends DivinityStorage implements DivinityRegion {
-	
-		public Region(String n, Divinity i) {
-			super(n, i);
-		}
-
-		public int getPriority(){
-			return getInt(DRI.PRIORITY);
-		}
-		
-		public int getLength(){
-			return getInt(DRI.LENGTH);
-		}
-		
-		public int getWidth(){
-			return getInt(DRI.WIDTH);
-		}
-		
-		public int getHeight(){
-			return getInt(DRI.HEIGHT);
-		}
-		
-		public int getArea(){
-			return getInt(DRI.AREA);
-		}
-		
-		public String getMaxBlock(){
-			return getStr(DRI.MAX_BLOCK);
-		}
-		
-		public String getMinBlock(){
-			return getStr(DRI.MIN_BLOCK);
-		}
-		
-		public boolean isDisabled(){
-			return getBool(DRI.DISABLED);
-		}
-		
-		public boolean getFlag(DRF flag){
-			return getBool(flag);
-		}
-		
-		public Map<DRF, Boolean> getFlags(){
-			Map<DRF, Boolean> flagMap = new HashMap<>();
-			for (DRF f : DRF.values()){
-				if (stuff.containsKey(f.toString())){
-					flagMap.put(f, getBool(f));
-				}
-			}
-			return flagMap;
-		}
-		
-		public boolean canBuild(org.bukkit.entity.Player p){
-			
-			DivinityPlayer dp = api.getDivPlayer(p);
-			
-			for (String perm : (List<String>)getList(DRI.PERMS)){
-				if (dp.getList(DPI.PERMS).contains(perm)){
-					return true;
-				}
-			}
-			
-			return getBool(DRI.DISABLED) ? true : false;
-		}
-
-		public World world() {
-			return Bukkit.getWorld(getStr(DRI.WORLD));
-		}
-
-		public String getWorld() {
-			return getStr(DRI.WORLD);
-		}
-
-		public List<String> getPerms() {
-			return getList(DRI.PERMS);
-		}	
-	}
-
-	public class Alliance extends DivinityStorage implements DivinityAlliance {
-		
-		public Alliance(String n, Divinity i) {
-			super(n, i);
-		}
-
-		public boolean exists(){
-			return api.divManager.getMap(DivinityManager.allianceDir).containsKey(name);
-		}
-	}
-	
-	public class System extends DivinityStorage implements DivinitySystem {
-
-		public System(String n, Divinity i) {
-			super(n, i);
-			set(DPI.DISPLAY_NAME, "&6Console");
-			set(DPI.PM_COLOR, "&f");
-		}
-		
-		private YamlConfiguration markkitYaml;
-		
-		public YamlConfiguration getMarkkit(){
-			return markkitYaml;
-		}
-		
-		public void setMarkkit(YamlConfiguration yaml){
-			markkitYaml = yaml;
-		}
 	}
 }
