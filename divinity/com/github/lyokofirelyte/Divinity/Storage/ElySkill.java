@@ -16,6 +16,7 @@ public enum ElySkill {
 	ATTACK("ATTACK"), // weapons like normal
 	FENCING("FENCING"), // stick fighting
 	ARCHERY("ARCHERY"),
+	FISHING("FISHING"),
 	PATROL("PATROL");
 	
 	ElySkill(String skill){

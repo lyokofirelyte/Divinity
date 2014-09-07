@@ -29,6 +29,8 @@ public class TeamspeakManager {
 	private Divinity main;
 	
 	public boolean active = false;
+	private Thread tsThread = null;
+	TS3Query query = null;
 	
 	public TeamspeakManager(Divinity i){
 		main = i;
@@ -43,14 +45,14 @@ public class TeamspeakManager {
 			
 			System.out.println("Loading WAQuery!");
 			
-			new Thread(new Runnable(){ public void run(){
+			tsThread = new Thread(new Runnable(){ public void run(){
 
 				final TS3Config config = new TS3Config();
 				config.setHost("50.23.168.200");
 				config.setDebugLevel(Level.SEVERE);
 				config.setLoginCredentials(cred[0], cred[1]);
 
-				final TS3Query query = new TS3Query(config);
+				query = new TS3Query(config);
 				query.connect();
 
 				final TS3Api api = query.getApi();
@@ -147,7 +149,14 @@ public class TeamspeakManager {
 				
 				active = true;
 				
-			}}).start();
+			}});
+			
+			tsThread.start();
 		}
+	}
+	
+	public void stop(){
+		query.exit();
+		System.out.println("WAQuery offline!");
 	}
 }
