@@ -56,6 +56,7 @@ public class Divinity extends DivinityAPI {
 		ts3 = new TeamspeakManager(this);
 		fw = new FW(this);
 		json = new JSONManager(this);
+		web = new WebsiteManager(this);
 		registerEnums();
 
 		for (DivinityModule module : modules){

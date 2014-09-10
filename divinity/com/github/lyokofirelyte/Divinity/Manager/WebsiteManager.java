@@ -5,19 +5,78 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.github.lyokofirelyte.Divinity.Divinity;
+import com.github.lyokofirelyte.Divinity.Manager.JSONManager.JSONClickType;
+import com.google.common.collect.ImmutableMap;
 
-public class WebsiteManager {
+public class WebsiteManager implements Runnable {
 	
 	Divinity api;
+	public List<String> messages = new ArrayList<String>();
+	public List<String> onlinePlayers = new ArrayList<String>();
+	private boolean failed = false;
 	
 	public WebsiteManager(Divinity main){
 		api = main;
+	}
+	
+	@Override
+	public void run(){
+		
+		try {
+		
+			onlinePlayers = new ArrayList<String>();
+			
+			for (Player p : Bukkit.getOnlinePlayers()){
+				onlinePlayers.add(p.getName());
+			}
+			
+			Map<String, Object> map = new HashMap<>();
+			map.put("type", "minecraft_refresh");
+			map.put("players", onlinePlayers);
+			
+			JSONObject obj = sendPost("/api/chat", map);
+			List<String> message = (List<String>) obj.get("message");
+			String type = (String) obj.get("type");
+			
+			if (type.equals("send")){
+				for (String s : message){
+					if (!messages.contains(s)){
+						messages.add(s);
+						String noTimeStamp = s.substring(s.indexOf("] ")+1);
+						String user = noTimeStamp.split(":")[0];
+						String send = api.AS("&6W &8\u2744&7&o" + user + "&f: " + s.substring(s.indexOf(user) + user.length() + 2));
+						api.json.create("", ImmutableMap.of(
+							send, ImmutableMap.of(
+								JSONClickType.NONE, new String[]{
+									"&6&oThis user is using our website chat!"
+								}
+							)
+						)).sendToAllPlayers();
+					}
+				}
+			}
+			
+			if (messages.size() > 100){
+				messages.remove(0);
+			}
+			
+		} catch (Exception e){
+			if (!failed){
+				failed = true;
+				System.out.println("Error connecting to the website. There will be no further error messages.");
+			}
+		}
 	}
 
 	public JSONObject sendGet(final String folder){
@@ -26,7 +85,7 @@ public class WebsiteManager {
 
 		try {
 			
-			String url = "http://worldsapart.no-ip.org:9090/" + folder;
+			String url = "http://worldsapart.no-ip.org:9090" + folder;
 			 
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -46,14 +105,12 @@ public class WebsiteManager {
 	 
 			result = (JSONObject) new JSONParser().parse(response.toString());
 			
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+		} catch (Exception e){}
 		
 		return result;
 	}
  
-	public JSONObject sendPost(final String folder, final Map<String, String> map){
+	public JSONObject sendPost(final String folder, final Map<String, Object> map){
 		
 		JSONObject result = null;
 		
@@ -67,7 +124,7 @@ public class WebsiteManager {
 			}
 			
 			 
-			String url = "http://worldsapart.no-ip.org:9090/" + folder;
+			String url = "http://worldsapart.no-ip.org:9090" + folder;
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 			con.setRequestMethod("POST");
@@ -93,9 +150,7 @@ public class WebsiteManager {
 			
 			result = (JSONObject) new JSONParser().parse(response.toString());
 			
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+		} catch (Exception e){}
 		
 		return result;
 	}
