@@ -67,10 +67,6 @@ public class WebsiteManager implements Runnable {
 				}
 			}
 			
-			if (messages.size() > 100){
-				messages.remove(0);
-			}
-			
 		} catch (Exception e){
 			if (!failed){
 				failed = true;
@@ -92,6 +88,7 @@ public class WebsiteManager implements Runnable {
 			
 			con.setRequestMethod("GET");
 			con.setRequestProperty("User-Agent", "");
+			con.setRequestProperty("Content-Type", "application/json");
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
