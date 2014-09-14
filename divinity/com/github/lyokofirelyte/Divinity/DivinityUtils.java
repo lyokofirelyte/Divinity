@@ -186,6 +186,13 @@ public class DivinityUtils {
 	  	return ( sdf.format(cal.getTime()) );
 	}
 	
+	public String getMonthAndDay(){
+	  	Calendar cal = Calendar.getInstance();
+	  	cal.setTimeInMillis(System.currentTimeMillis());
+	  	SimpleDateFormat sdf = new SimpleDateFormat("M.dd");
+	  	return ( sdf.format(cal.getTime()) );
+	}
+	
 	public String getTimeFull() {
 		Calendar cal = Calendar.getInstance();
 	  	cal.getTime();

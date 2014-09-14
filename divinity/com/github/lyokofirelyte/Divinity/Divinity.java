@@ -23,6 +23,7 @@ import com.github.lyokofirelyte.Divinity.Manager.TeamspeakManager;
 import com.github.lyokofirelyte.Divinity.Manager.TitleExtractor;
 import com.github.lyokofirelyte.Divinity.Manager.WebsiteManager;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityAlliance;
+import com.github.lyokofirelyte.Divinity.Storage.DivinityGame;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRegion;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRing;
@@ -57,8 +58,7 @@ public class Divinity extends DivinityAPI {
 		fw = new FW(this);
 		json = new JSONManager(this);
 		web = new WebsiteManager(this);
-		registerEnums();
-
+		
 		for (DivinityModule module : modules){
 			module.onRegister();
 		}
@@ -93,15 +93,6 @@ public class Divinity extends DivinityAPI {
 		}
 	}
 	
-	private void registerEnums(){
-		
-		Reflections ref = new Reflections("com.github.lyokofirelyte.Divinity.Storage");
-		
-		for (Class<? extends Enum> e : ref.getSubTypesOf(Enum.class)){
-			divManager.enums.add(e);
-		}
-	}
-	
 	public List<DivinityModule> getAllModules(){
 		return modules;
 	}
@@ -124,6 +115,10 @@ public class Divinity extends DivinityAPI {
 	
 	public DivinityRing getDivRing(String ring){
 		return (DivinityRing) divManager.getStorage(DivinityManager.ringsDir, ring.toLowerCase());
+	}
+	
+	public DivinityGame getDivGame(String gameType, String gameName){
+		return (DivinityGame) divManager.getStorage(DivinityManager.gamesDir + gameType + "/", gameName.toLowerCase());
 	}
 	
 	public DivinitySystem getSystem(){

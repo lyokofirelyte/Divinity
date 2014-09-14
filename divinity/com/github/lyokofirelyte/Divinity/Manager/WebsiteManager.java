@@ -16,6 +16,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.github.lyokofirelyte.Divinity.Divinity;
+import com.github.lyokofirelyte.Divinity.JSON.JSONChatClickEventType;
+import com.github.lyokofirelyte.Divinity.JSON.JSONChatExtra;
+import com.github.lyokofirelyte.Divinity.JSON.JSONChatHoverEventType;
+import com.github.lyokofirelyte.Divinity.JSON.JSONChatMessage;
 import com.github.lyokofirelyte.Divinity.Manager.JSONManager.JSONClickType;
 import com.google.common.collect.ImmutableMap;
 
@@ -54,15 +58,23 @@ public class WebsiteManager implements Runnable {
 					if (!messages.contains(s)){
 						messages.add(s);
 						String noTimeStamp = s.substring(s.indexOf("] ")+1);
-						String user = noTimeStamp.split(":")[0];
-						String send = api.AS("&6W &8\u2744&7&o" + user + "&f: " + s.substring(s.indexOf(user) + user.length() + 2));
-						api.json.create("", ImmutableMap.of(
-							send, ImmutableMap.of(
-								JSONClickType.NONE, new String[]{
-									"&6&oThis user is using our website chat!"
-								}
-							)
-						)).sendToAllPlayers();
+						String user = ("&7&o" + noTimeStamp.split(":")[0]).replace(" ", "");
+						String send = "&6W &8\u2744&7&o " + user + "&f:" + s.substring(s.indexOf(user) + user.length() + 9);
+						JSONChatMessage msg  = new JSONChatMessage("");
+						
+						for (String m : send.split(" ")){
+							JSONChatExtra extra = null;
+							if (m.startsWith("http")){
+								extra = new JSONChatExtra(api.AS("&6&o" + api.title.getPageTitle(m) + " "));
+								extra.setClickEvent(JSONChatClickEventType.OPEN_URL, m);
+								extra.setHoverEvent(JSONChatHoverEventType.SHOW_TEXT, api.AS("&7Open url..."));
+							} else {
+								extra = new JSONChatExtra(api.AS(m + " "));
+								extra.setHoverEvent(JSONChatHoverEventType.SHOW_TEXT, api.AS("&7&oThis user is using our web chat!"));
+							}
+							msg.addExtra(extra);
+						}
+						msg.sendToAllPlayers();
 					}
 				}
 			}

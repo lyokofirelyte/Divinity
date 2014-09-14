@@ -1,17 +1,16 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import com.github.lyokofirelyte.Divinity.Divinity;
 
-public class DivinityStorage {
+public class DivinityStorage extends YamlConfiguration {
 
 	public Divinity api;
 	public UUID uuid;
@@ -38,8 +37,6 @@ public class DivinityStorage {
 		isGame = true;
 	}
 	
-	public Map<String, Object> stuff = new HashMap<String, Object>();
-	
 	public String name(){
 		return name;
 	}
@@ -60,131 +57,123 @@ public class DivinityStorage {
 		return isGame ? gameName : "none";
 	}
 	
+	/**
+	 * If you are setting something that can't be pulled from a YAML file, delete it when you're done!!!
+	 * Example: enchants, player objects, hashmaps...
+	 */
 	public Object getRawInfo(Enum<?> i){
-		return stuff.containsKey(i.toString()) ? stuff.get(i.toString()) : null;
+		return contains(i.toString()) ? get(i.toString()) : null;
 	}
 	
 	public String getStr(Enum<?> i){
 
-		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof String){
-				return (String) stuff.get(i.toString());
-			} else {
-				return stuff.get(i.toString()) + "";
+		if (contains(i.toString())){
+			if (get(i.toString()) instanceof String){
+				return (String) get(i.toString());
 			}
-		} else {
-			return "none";
+			return get(i.toString()) + "";
 		}
+		return "none";
 	}
 	
 	public int getInt(Enum<?> i){
 
-		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof Integer){
-				return (Integer) stuff.get(i.toString());
-			} else {
-				return api.divUtils.isInteger(stuff.get(i.toString()) + "") ? Integer.parseInt(stuff.get(i.toString()) + "") : 0;
+		if (contains(i.toString())){
+			if (get(i.toString()) instanceof Integer){
+				return (Integer) get(i.toString());
 			}
-		} else {
-			return 0;
+			return api.divUtils.isInteger(get(i.toString()) + "") ? Integer.parseInt(get(i.toString()) + "") : 0;
 		}
+		return 0;
 	}
 	
 	public long getLong(Enum<?> i){
 
-		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof Long){
-				return (Long) stuff.get(i.toString());
-			} else {
-				try {
-					return Long.parseLong(stuff.get(i.toString()) + "");
-				} catch (Exception e){
-					return 0L;
-				}
+		if (contains(i.toString())){
+			if (get(i.toString()) instanceof Long){
+				return (Long) get(i.toString());
 			}
-		} else {
-			return 0L;
+			try {
+				return Long.parseLong(get(i.toString()) + "");
+			} catch (Exception e){
+				return 0L;
+			}
 		}
+		return 0L;
 	}
 	
 	public byte getByte(Enum<?> i){
 
-		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof Byte){
-				return (Byte) stuff.get(i.toString());
-			} else {
-				try {
-					return Byte.parseByte(stuff.get(i.toString()) + "");
-				} catch (Exception e){
-					return 0;
-				}
+		if (contains(i.toString())){
+			if (get(i.toString()) instanceof Byte){
+				return (Byte) get(i.toString());
 			}
-		} else {
-			return 0;
+			try {
+				return Byte.parseByte(get(i.toString()) + "");
+			} catch (Exception e){
+				return 0;
+			}
 		}
+		return 0;
 	}
 	
 	public double getDouble(Enum<?> i){
 
-		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof Double){
-				return (Double) stuff.get(i.toString());
-			} else {
-				try {
-					return Double.parseDouble(stuff.get(i.toString()) + "");
-				} catch (Exception e){
-					return 0D;
-				}
+		if (contains(i.toString())){
+			if (get(i.toString()) instanceof Double){
+				return (Double) get(i.toString());
 			}
-		} else {
-			return 0D;
+			try {
+				return Double.parseDouble(get(i.toString()) + "");
+			} catch (Exception e){
+				return 0D;
+			}
 		}
+		return 0D;
 	}
 	
 	public boolean getBool(Enum<?> i){
 
-		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof Boolean){
-				return (Boolean) stuff.get(i.toString());
-			} else {
-				try {
-					return Boolean.valueOf(stuff.get(i.toString()) + "");
-				} catch (Exception e){
-					return false;
-				}
+		if (contains(i.toString())){
+			if (get(i.toString()) instanceof Boolean){
+				return (Boolean) get(i.toString());
 			}
-		} else {
-			return false;
+			try {
+				return Boolean.valueOf(get(i.toString()) + "");
+			} catch (Exception e){
+				return false;
+			}
 		}
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<String> getList(Enum<?> i){
 		
-		if (stuff.containsKey(i.toString())){
+		if (contains(i.toString())){
 			try {
-				if (stuff.get(i.toString()) instanceof List){
-					return (List<String>) stuff.get(i.toString());
+				if (get(i.toString()) instanceof List){
+					return (List<String>) get(i.toString());
 				}
-				stuff.put(i.toString(), new ArrayList<String>());
+				set(i.toString(), new ArrayList<String>());
 			} catch (Exception e){
-				stuff.put(i.toString(), new ArrayList<String>());
+				set(i.toString(), new ArrayList<String>());
 			}
 		} else {
-			stuff.put(i.toString(), new ArrayList<String>());
+			set(i.toString(), new ArrayList<String>());
 		}
 		
-		return (List<String>) stuff.get(i.toString());
+		return (List<String>) get(i.toString());
 	}
 	
 	public Location getLoc(Enum<?> i){
 		
-		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof Location){
-				return (Location) stuff.get(i.toString());
+		if (contains(i.toString())){
+			if (get(i.toString()) instanceof Location){
+				return (Location) get(i.toString());
 			}
 			try {
-				String[] loc = stuff.get(i.toString()).toString().split(" ");
+				String[] loc = get(i.toString()).toString().split(" ");
 				if (loc.length == 4){
 					return new Location(Bukkit.getWorld(loc[0]), Double.parseDouble(loc[1]), Double.parseDouble(loc[2]), Double.parseDouble(loc[3]));
 				} else if (loc.length == 6){
@@ -201,19 +190,22 @@ public class DivinityStorage {
 	@SuppressWarnings("unchecked")
 	public List<ItemStack> getStack(Enum<?> i){
 		
-		if (stuff.containsKey(i.toString())){
-			if (stuff.get(i.toString()) instanceof List){
-				return (List<ItemStack>) stuff.get(i.toString());
+		if (contains(i.toString())){
+			if (get(i.toString()) instanceof List){
+				return (List<ItemStack>) get(i.toString());
 			}
-			stuff.put(i.toString(), new ArrayList<ItemStack>());
-		} else {
-			stuff.put(i.toString(), new ArrayList<ItemStack>());
 		}
-		
-		return (List<ItemStack>) stuff.get(i.toString());
+
+		set(i.toString(), new ArrayList<ItemStack>());
+		return (List<ItemStack>) get(i.toString());
 	}
 	
 	public void set(Enum<?> i, Object infos){
-		stuff.put(i.toString(), infos);
+		if (infos instanceof Location){
+			Location l = (Location) infos;
+			set(i.toString(), l.getWorld().getName() + " " + l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ() + " " + l.getYaw() + " " + l.getPitch());
+		} else {
+			set(i.toString(), infos);
+		}
 	}
 }

@@ -54,7 +54,7 @@ public class DivinityRegion extends DivinityStorage {
 	public Map<DRF, Boolean> getFlags(){
 		Map<DRF, Boolean> flagMap = new HashMap<>();
 		for (DRF f : DRF.values()){
-			if (stuff.containsKey(f.toString())){
+			if (contains(f.toString())){
 				flagMap.put(f, getBool(f));
 			}
 		}
