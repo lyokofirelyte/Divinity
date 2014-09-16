@@ -54,6 +54,36 @@ public class DivinityUtils {
 		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 	
+	public static Location getCardinalMove(Player p) {
+		
+		double rotation = (p.getEyeLocation().getYaw() - 180) % 360;
+		
+        if (rotation < 0) {
+            rotation += 360.0;
+        }
+        if (0 <= rotation && rotation < 22.5) {
+            return new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY(), p.getEyeLocation().getZ()-4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (22.5 <= rotation && rotation < 67.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()+4, p.getEyeLocation().getY(), p.getEyeLocation().getZ()-4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (67.5 <= rotation && rotation < 112.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()+4, p.getEyeLocation().getY(), p.getEyeLocation().getZ(), p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (112.5 <= rotation && rotation < 157.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()+4, p.getEyeLocation().getY(), p.getEyeLocation().getZ()+4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (157.5 <= rotation && rotation < 202.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY(), p.getEyeLocation().getZ()+4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (202.5 <= rotation && rotation < 247.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()-4, p.getEyeLocation().getY(), p.getEyeLocation().getZ()+4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (247.5 <= rotation && rotation < 292.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()-4, p.getEyeLocation().getY(), p.getEyeLocation().getZ(), p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (292.5 <= rotation && rotation < 337.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()-4, p.getEyeLocation().getY(), p.getEyeLocation().getZ()-4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (337.5 <= rotation && rotation < 360.0) {
+        	 return new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY(), p.getEyeLocation().getZ()-4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else {
+            return null;
+        }
+	}
+	
     public static BlockFace getPlayerDirection(float direction){
 
         direction = direction % 360;

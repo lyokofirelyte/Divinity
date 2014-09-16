@@ -45,8 +45,17 @@
             <artifactId>teamspeak3-api</artifactId>
             <version>[1.0.0,2.0.0)</version>
         </dependency> 
+        <dependency>
+        	<groupId>com.dsh105</groupId>
+        	<artifactId>HoloAPI</artifactId>
+        	<version>1.0.7</version>
+   		</dependency>
 	</dependencies>
 	<repositories>
+		<repository>
+        	<id>hawk-repo</id>
+        	<url>http://ci.hawkfalcon.com/plugin/repository/everything/</url>
+   		</repository>
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/repositories/snapshots/</url>
@@ -79,6 +88,7 @@
     						<exclude>org.bukkit:*</exclude>
     						<exclude>com.google:*</exclude>
     						<exclude>com.dom4j:*</exclude>
+    						<exclude>com.dsh105:*</exclude>
     						<exclude>xml-apis.xml-apis:*</exclude>
   						</excludes>
 					</artifactSet>

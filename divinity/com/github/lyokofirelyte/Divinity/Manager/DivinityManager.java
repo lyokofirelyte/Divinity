@@ -173,6 +173,7 @@ public class DivinityManager {
 			}
 			
 			api.getSystem().setMarkkit(lc(new File(DivinityManager.sysDir + "markkit.yml")));
+			api.getSystem().loadEffects();
 			
 		} else {
 			
