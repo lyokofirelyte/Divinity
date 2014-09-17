@@ -1,4 +1,4 @@
-package com.github.lyokofirelyte.Divinity.Manager;
+package com.github.lyokofirelyte.Divinity.PublicUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

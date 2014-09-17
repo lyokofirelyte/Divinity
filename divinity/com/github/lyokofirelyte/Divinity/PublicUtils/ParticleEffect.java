@@ -1,4 +1,4 @@
-package com.github.lyokofirelyte.Divinity.Manager;
+package com.github.lyokofirelyte.Divinity.PublicUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -13,8 +13,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.github.lyokofirelyte.Divinity.Manager.RefUtils.PackageType;
-import com.github.lyokofirelyte.Divinity.Manager.RefUtils.PacketType;
+import com.github.lyokofirelyte.Divinity.PublicUtils.RefUtils.PackageType;
+import com.github.lyokofirelyte.Divinity.PublicUtils.RefUtils.PacketType;
  
 /**
  * <b>ParticleEffect Library</b>

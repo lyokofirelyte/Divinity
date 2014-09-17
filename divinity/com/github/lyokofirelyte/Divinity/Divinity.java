@@ -15,13 +15,13 @@ import org.bukkit.event.Event;
 import org.reflections.Reflections;
 
 import com.github.lyokofirelyte.Divinity.Commands.DivinityRegistry;
-import com.github.lyokofirelyte.Divinity.JSON.FW;
 import com.github.lyokofirelyte.Divinity.Manager.DivinityManager;
 import com.github.lyokofirelyte.Divinity.Manager.JSONManager;
 import com.github.lyokofirelyte.Divinity.Manager.PlayerLocation;
 import com.github.lyokofirelyte.Divinity.Manager.TeamspeakManager;
-import com.github.lyokofirelyte.Divinity.Manager.TitleExtractor;
 import com.github.lyokofirelyte.Divinity.Manager.WebsiteManager;
+import com.github.lyokofirelyte.Divinity.PublicUtils.FW;
+import com.github.lyokofirelyte.Divinity.PublicUtils.TitleExtractor;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityAlliance;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityGame;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;

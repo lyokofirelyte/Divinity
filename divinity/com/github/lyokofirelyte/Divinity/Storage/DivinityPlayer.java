@@ -1,20 +1,27 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import com.dsh105.holoapi.HoloAPI;
 import com.dsh105.holoapi.api.Hologram;
 import com.dsh105.holoapi.api.HologramFactory;
 import com.github.lyokofirelyte.Divinity.Divinity;
 import com.github.lyokofirelyte.Divinity.DivinityUtils;
+import com.github.lyokofirelyte.Divinity.PublicUtils.ParticleEffect;
 
 public class DivinityPlayer extends DivinityStorage {
 
 	public DivinityPlayer(UUID n, Divinity i) {
 		super(n, i);
 	}
+	
+	private List<String> activeEffects = new ArrayList<String>();
 		
 	public UUID uuid(){
 		return uuid;
@@ -66,10 +73,15 @@ public class DivinityPlayer extends DivinityStorage {
 	}
 	
 	public void remHologram(){
+		
 		try {
 			HoloAPI.getManager().getHologram(getStr(DPI.HOLO_ID)).clearAllPlayerViews();
-			HoloAPI.getManager().clearFromFile(HoloAPI.getManager().getHologram(getStr(DPI.HOLO_ID)));
 		} catch (Exception e){}
+		
+		try {
+			HoloAPI.getManager().clearFromFile(getStr(DPI.HOLO_ID));
+		} catch (Exception e){}
+		
 		set(DPI.HOLO_ID, "none");
 	}
 	
@@ -84,6 +96,32 @@ public class DivinityPlayer extends DivinityStorage {
 			return HoloAPI.getManager().getHologram(getStr(DPI.HOLO_ID));
 		}
 		return null;
+	}
+	
+	public void lockEffect(String name, ParticleEffect eff, int offsetX, int offsetY, int offsetZ, int speed, int amount, int range, long cycleDelay){
+		if (!activeEffects.contains(name)){
+			activeEffects.add(name);
+			api.repeat(this, "playEffect", 0L, cycleDelay, "playerEffects" + name, eff, offsetX, offsetY, offsetZ, speed, amount, range, Bukkit.getPlayer(uuid()));
+		}
+	}
+	
+	public void playEffect(ParticleEffect eff, int offsetX, int offsetY, int offsetZ, int speed, int amount, int range, Player p){
+		Location l = p.getLocation();
+		eff.display(offsetX, offsetY, offsetZ, speed, amount, new Location(l.getWorld(), l.getX(),  l.getY()+1, l.getZ()), range);
+	}
+	
+	public void remEffect(String name){
+		if (activeEffects.contains(name)){
+			activeEffects.remove(name);
+			api.cancelTask("playerEffects" + name);
+		}
+	}
+	
+	public void clearEffects(){
+		for (String effect : activeEffects){
+			api.cancelTask("playerEffects" + effect);
+		}
+		activeEffects = new ArrayList<String>();
 	}
 		
 	public void s(String message){

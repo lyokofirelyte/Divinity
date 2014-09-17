@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -82,6 +83,23 @@ public class DivinityUtils {
         } else {
             return null;
         }
+	}
+	
+	public static Entity[] getNearbyEntities(Location l, int radius) {
+	    int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
+	    HashSet <Entity> radiusEntities = new HashSet < Entity > ();
+	 
+	    for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++) {
+	        for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++) {
+	            int x = (int) l.getX(), y = (int) l.getY(), z = (int) l.getZ();
+	            for (Entity e: new Location(l.getWorld(), x + (chX * 16), y, z + (chZ * 16)).getChunk().getEntities()) {
+	                if (e.getLocation().distance(l) <= radius && e.getLocation().getBlock() != l.getBlock())
+	                    radiusEntities.add(e);
+	            }
+	        }
+	    }
+	 
+	    return radiusEntities.toArray(new Entity[radiusEntities.size()]);
 	}
 	
     public static BlockFace getPlayerDirection(float direction){
