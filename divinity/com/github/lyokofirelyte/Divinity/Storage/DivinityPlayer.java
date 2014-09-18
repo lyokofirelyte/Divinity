@@ -106,8 +106,10 @@ public class DivinityPlayer extends DivinityStorage {
 	}
 	
 	public void playEffect(ParticleEffect eff, int offsetX, int offsetY, int offsetZ, int speed, int amount, int range, Player p){
-		Location l = p.getLocation();
-		eff.display(offsetX, offsetY, offsetZ, speed, amount, new Location(l.getWorld(), l.getX(),  l.getY()+1, l.getZ()), range);
+		try {
+			Location l = p.getLocation();
+			eff.display(offsetX, offsetY, offsetZ, speed, amount, new Location(l.getWorld(), l.getX(),  l.getY()+1, l.getZ()), range);
+		} catch (Exception e){}
 	}
 	
 	public void remEffect(String name){

@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import net.minecraft.util.gnu.trove.map.hash.THashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import com.github.lyokofirelyte.Divinity.Divinity;
@@ -33,7 +35,7 @@ public class DivinityManager {
 		refresh();
 	}
 	
-	public Map<String, Map<String, DivinityStorage>> data = new HashMap<>();
+	public Map<String, Map<String, DivinityStorage>> data = new THashMap<>();
 	private List<String> dirs = Arrays.asList(dir, allianceDir, regionsDir, ringsDir, sysDir, gamesDir, backupDir);
 	
 	final static public String sysDir = "./plugins/Divinity/system/";
@@ -66,7 +68,7 @@ public class DivinityManager {
 	}
 	
 	public Map<String, DivinityStorage> getMap(String directory){
-		return data.containsKey(directory) ? data.get(directory) : new HashMap<String, DivinityStorage>();
+		return data.containsKey(directory) ? data.get(directory) : new THashMap<String, DivinityStorage>();
 	}
 	
 	public DivinityStorage getStorage(String directory, String name){
@@ -136,7 +138,7 @@ public class DivinityManager {
 		
 		if (load){
 			if (!data.containsKey(directory)){
-				data.put(directory, new HashMap<String, DivinityStorage>());
+				data.put(directory, new THashMap<String, DivinityStorage>());
 			}
 			data.get(directory).put(name, storage);
 		} else {
@@ -229,7 +231,7 @@ public class DivinityManager {
 	
 	private void refresh(){
 		for (String d : dirs){
-			data.put(d, new HashMap<String, DivinityStorage>());
+			data.put(d, new THashMap<String, DivinityStorage>());
 		}
 	}
 }
