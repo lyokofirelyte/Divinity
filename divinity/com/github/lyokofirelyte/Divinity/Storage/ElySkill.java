@@ -17,7 +17,9 @@ public enum ElySkill {
 	FENCING("FENCING"), // stick fighting
 	ARCHERY("ARCHERY"),
 	FISHERMAN("FISHERMAN"),
-	PATROL("PATROL");
+	PATROL("PATROL"),
+	SOLAR("SOLAR"),
+	LUNAR("LUNAR");
 	
 	ElySkill(String skill){
 		this.skill = skill;
