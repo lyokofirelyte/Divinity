@@ -16,7 +16,7 @@ public enum ElySkill {
 	ATTACK("ATTACK"), // weapons like normal
 	FENCING("FENCING"), // stick fighting
 	ARCHERY("ARCHERY"),
-	FISHERMAN("FISHERMAN"),
+	//FISHERMAN("FISHERMAN"),
 	PATROL("PATROL"),
 	SOLAR("SOLAR"),
 	LUNAR("LUNAR");

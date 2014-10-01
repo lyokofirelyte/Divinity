@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.util.gnu.trove.map.hash.THashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
@@ -45,7 +47,7 @@ public class WebsiteManager implements Runnable {
 				onlinePlayers.add(p.getName());
 			}
 			
-			Map<String, Object> map = new HashMap<>();
+			Map<String, Object> map = new THashMap<>();
 			map.put("type", "minecraft_refresh");
 			map.put("players", onlinePlayers);
 			

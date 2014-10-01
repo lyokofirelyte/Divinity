@@ -143,6 +143,9 @@ public class DivinityManager {
 			data.get(directory).put(name, storage);
 		} else {
 			try { storage.save(file); } catch (Exception e){}
+			if (directory.equals(sysDir)){
+				((DivinitySystem) storage).saveMarkkit();
+			}
 		}
 
 		return storage;

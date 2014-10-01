@@ -2,15 +2,15 @@ package com.github.lyokofirelyte.Divinity.PublicUtils;
 
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 
-import net.minecraft.server.v1_7_R3.EntityFireworks;
-import net.minecraft.server.v1_7_R3.PacketPlayOutEntityStatus;
-import net.minecraft.server.v1_7_R3.World;
+import net.minecraft.server.v1_7_R4.EntityFireworks;
+import net.minecraft.server.v1_7_R4.PacketPlayOutEntityStatus;
+import net.minecraft.server.v1_7_R4.World;
 
 public class DivRocket extends EntityFireworks {
 	
