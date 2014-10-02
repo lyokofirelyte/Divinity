@@ -35,16 +35,16 @@
 			<artifactId>bukkit</artifactId>
 			<version>${bukkit}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.bukkit</groupId>
- 			<artifactId>craftbukkit</artifactId>
- 			<version>${craftbukkit}</version>
- 		</dependency>
  		<dependency>
             <groupId>com.github.theholywaffle</groupId>
             <artifactId>teamspeak3-api</artifactId>
             <version>[1.0.0,2.0.0)</version>
         </dependency> 
+        <dependency>
+        	<groupId>com.dsh105</groupId>
+        	<artifactId>HoloAPI</artifactId>
+        	<version>1.0.7</version>
+   		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -79,6 +79,7 @@
     						<exclude>org.bukkit:*</exclude>
     						<exclude>com.google:*</exclude>
     						<exclude>com.dom4j:*</exclude>
+    						<exclude>com.dsh105:*</exclude>
     						<exclude>xml-apis.xml-apis:*</exclude>
   						</excludes>
 					</artifactSet>

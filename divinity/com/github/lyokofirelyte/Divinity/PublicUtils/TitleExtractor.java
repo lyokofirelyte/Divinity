@@ -1,4 +1,4 @@
-package com.github.lyokofirelyte.Divinity.Manager;
+package com.github.lyokofirelyte.Divinity.PublicUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

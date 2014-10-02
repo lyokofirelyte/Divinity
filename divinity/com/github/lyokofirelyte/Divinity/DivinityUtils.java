@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -52,6 +53,53 @@ public class DivinityUtils {
 	
 	public static String AS(String message){
 		return ChatColor.translateAlternateColorCodes('&', message);
+	}
+	
+	public static Location getCardinalMove(Player p) {
+		
+		double rotation = (p.getEyeLocation().getYaw() - 180) % 360;
+		
+        if (rotation < 0) {
+            rotation += 360.0;
+        }
+        if (0 <= rotation && rotation < 22.5) {
+            return new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY(), p.getEyeLocation().getZ()-4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (22.5 <= rotation && rotation < 67.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()+4, p.getEyeLocation().getY(), p.getEyeLocation().getZ()-4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (67.5 <= rotation && rotation < 112.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()+4, p.getEyeLocation().getY(), p.getEyeLocation().getZ(), p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (112.5 <= rotation && rotation < 157.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()+4, p.getEyeLocation().getY(), p.getEyeLocation().getZ()+4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (157.5 <= rotation && rotation < 202.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY(), p.getEyeLocation().getZ()+4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (202.5 <= rotation && rotation < 247.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()-4, p.getEyeLocation().getY(), p.getEyeLocation().getZ()+4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (247.5 <= rotation && rotation < 292.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()-4, p.getEyeLocation().getY(), p.getEyeLocation().getZ(), p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (292.5 <= rotation && rotation < 337.5) {
+        	return new Location(p.getWorld(), p.getEyeLocation().getX()-4, p.getEyeLocation().getY(), p.getEyeLocation().getZ()-4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else if (337.5 <= rotation && rotation < 360.0) {
+        	 return new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY(), p.getEyeLocation().getZ()-4, p.getEyeLocation().getPitch(), p.getEyeLocation().getYaw());
+        } else {
+            return null;
+        }
+	}
+	
+	public static Entity[] getNearbyEntities(Location l, int radius) {
+	    int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
+	    HashSet <Entity> radiusEntities = new HashSet < Entity > ();
+	 
+	    for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++) {
+	        for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++) {
+	            int x = (int) l.getX(), y = (int) l.getY(), z = (int) l.getZ();
+	            for (Entity e: new Location(l.getWorld(), x + (chX * 16), y, z + (chZ * 16)).getChunk().getEntities()) {
+	                if (e.getLocation().distance(l) <= radius && e.getLocation().getBlock() != l.getBlock())
+	                    radiusEntities.add(e);
+	            }
+	        }
+	    }
+	 
+	    return radiusEntities.toArray(new Entity[radiusEntities.size()]);
 	}
 	
     public static BlockFace getPlayerDirection(float direction){
@@ -183,6 +231,13 @@ public class DivinityUtils {
 	  	Calendar cal = Calendar.getInstance();
 	  	cal.setTimeInMillis(l);
 	  	SimpleDateFormat sdf = new SimpleDateFormat("M.dd @ HH.mm");
+	  	return ( sdf.format(cal.getTime()) );
+	}
+	
+	public String getMonthAndDay(){
+	  	Calendar cal = Calendar.getInstance();
+	  	cal.setTimeInMillis(System.currentTimeMillis());
+	  	SimpleDateFormat sdf = new SimpleDateFormat("M.dd");
 	  	return ( sdf.format(cal.getTime()) );
 	}
 	

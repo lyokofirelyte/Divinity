@@ -1,4 +1,4 @@
-package com.github.lyokofirelyte.Divinity.JSON;
+package com.github.lyokofirelyte.Divinity.PublicUtils;
 
 import java.lang.reflect.Method;
 
