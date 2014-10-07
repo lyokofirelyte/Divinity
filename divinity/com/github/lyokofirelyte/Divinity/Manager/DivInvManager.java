@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.util.gnu.trove.map.hash.THashMap;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -27,7 +29,7 @@ import com.github.lyokofirelyte.Divinity.DivinityUtils;
 public class DivInvManager implements Listener {
 	
 	private Divinity main;
-	public HashMap<String, DivGui> currentGui = new HashMap<String, DivGui>();
+	public THashMap<String, DivGui> currentGui = new THashMap<String, DivGui>();
 	
 	public DivInvManager(Divinity i){
 		main = i;

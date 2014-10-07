@@ -35,6 +35,11 @@
 			<artifactId>bukkit</artifactId>
 			<version>${bukkit}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+ 			<artifactId>craftbukkit</artifactId>
+ 			<version>${craftbukkit}</version>
+ 		</dependency>
  		<dependency>
             <groupId>com.github.theholywaffle</groupId>
             <artifactId>teamspeak3-api</artifactId>
@@ -96,6 +101,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
 				<configuration>
 					<version>3.1</version>
 					<source>1.7</source>

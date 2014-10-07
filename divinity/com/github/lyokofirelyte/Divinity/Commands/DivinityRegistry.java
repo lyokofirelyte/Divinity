@@ -2,10 +2,11 @@ package com.github.lyokofirelyte.Divinity.Commands;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
+import net.minecraft.util.gnu.trove.map.hash.THashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +20,6 @@ import org.bukkit.plugin.SimplePluginManager;
 import com.github.lyokofirelyte.Divinity.Divinity;
 import com.github.lyokofirelyte.Divinity.DivinityUtils;
 import com.github.lyokofirelyte.Divinity.Storage.DPI;
-import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 import com.github.lyokofirelyte.Divinity.Storage.DivinitySystem;
 
 
@@ -125,7 +125,7 @@ public class DivinityRegistry implements CommandExecutor {
     	
     	if (filteredCmds.contains(cmd)){
 	    	DivinitySystem system = main.getSystem();
-	    	Map<Integer, String> filters = new HashMap<Integer, String>();
+	    	Map<Integer, String> filters = new THashMap<Integer, String>();
 	    	
 	    	for (int x = 0; x < args.length; x++){
 	    		for (String filter : system.getList(DPI.FILTER)){

@@ -2,10 +2,11 @@ package com.github.lyokofirelyte.Divinity;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import net.minecraft.util.gnu.trove.map.hash.THashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,8 +44,8 @@ public class Divinity extends DivinityAPI {
 	public Reflections ref;
 	public FW fw;
 	
-    public Map <List<String>, Object> commandMap = new HashMap<>();
-    public Map<String, Integer> activeTasks = new HashMap<String, Integer>();
+    public Map <List<String>, Object> commandMap = new THashMap<>();
+    public Map<String, Integer> activeTasks = new THashMap<String, Integer>();
     
 	@Override
 	public void onEnable(){
@@ -71,7 +72,6 @@ public class Divinity extends DivinityAPI {
 	public void onDisable(){
 		
 		try {
-			getSystem().getMarkkit().save(new File(DivinityManager.sysDir + "markkit.yml"));
 			divManager.save();
 		} catch (Exception e) {
 			e.printStackTrace();

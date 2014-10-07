@@ -1,6 +1,7 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
 import java.io.File;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,10 +15,13 @@ import com.github.lyokofirelyte.Divinity.PublicUtils.ParticleEffect;
 
 public class DivinitySystem extends DivinityStorage {
 
+	Divinity main;
+	
 	public DivinitySystem(String n, Divinity i) {
 		super(n, i);
 		set(DPI.DISPLAY_NAME, "&6Console");
 		set(DPI.PM_COLOR, "&f");
+		main = i;
 	}
 	
 	private YamlConfiguration markkitYaml;
@@ -36,8 +40,10 @@ public class DivinitySystem extends DivinityStorage {
 	
 	public void saveMarkkit(){
 		try {
-			markkitYaml.save(new File(DivinityManager.sysDir + "markkit.yml"));
+			markkitYaml.save(new File(DivinityManager.sysDir, "markkit.yml"));		
+			System.out.println("SAVED MARKKIT!");
 		} catch (Exception e){
+			e.printStackTrace();
 			System.out.println("FAILED TO SAVE MARKKIT!");
 		}
 	}

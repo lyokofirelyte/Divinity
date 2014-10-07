@@ -1,8 +1,9 @@
 package com.github.lyokofirelyte.Divinity.Storage;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.minecraft.util.gnu.trove.map.hash.THashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -52,7 +53,7 @@ public class DivinityRegion extends DivinityStorage {
 	}
 	
 	public Map<DRF, Boolean> getFlags(){
-		Map<DRF, Boolean> flagMap = new HashMap<>();
+		Map<DRF, Boolean> flagMap = new THashMap<>();
 		for (DRF f : DRF.values()){
 			if (contains(f.toString())){
 				flagMap.put(f, getBool(f));

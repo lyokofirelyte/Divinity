@@ -15,15 +15,16 @@ import net.minecraft.util.gnu.trove.map.hash.THashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import com.github.lyokofirelyte.Divinity.Divinity;
 import com.github.lyokofirelyte.Divinity.DivinityUtils;
 import com.github.lyokofirelyte.Divinity.Storage.DPI;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityAlliance;
+import com.github.lyokofirelyte.Divinity.Storage.DivinityGame;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityPlayer;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRegion;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityRing;
 import com.github.lyokofirelyte.Divinity.Storage.DivinityStorage;
-import com.github.lyokofirelyte.Divinity.Storage.DivinityGame;
 import com.github.lyokofirelyte.Divinity.Storage.DivinitySystem;
 
 public class DivinityManager {
@@ -35,7 +36,7 @@ public class DivinityManager {
 		refresh();
 	}
 	
-	public Map<String, Map<String, DivinityStorage>> data = new THashMap<>();
+	public Map<String, Map<String, DivinityStorage>> data = new THashMap<String, Map<String, DivinityStorage>>();
 	private List<String> dirs = Arrays.asList(dir, allianceDir, regionsDir, ringsDir, sysDir, gamesDir, backupDir);
 	
 	final static public String sysDir = "./plugins/Divinity/system/";
@@ -143,7 +144,7 @@ public class DivinityManager {
 			data.get(directory).put(name, storage);
 		} else {
 			try { storage.save(file); } catch (Exception e){}
-			if (directory.equals(sysDir)){
+			if (directory.equals(sysDir) && name.contains("system")){
 				((DivinitySystem) storage).saveMarkkit();
 			}
 		}
@@ -200,7 +201,15 @@ public class DivinityManager {
 		
 		for (String objectType : data.keySet()){
 			for (String objectName : data.get(objectType).keySet()){
-				modifyObject(objectType, objectName, false, false);
+				if(!objectName.contains("markkit")){
+					modifyObject(objectType, objectName, false, false);
+				}else{
+					try{
+						api.getSystem().getMarkkit().save(new File(DivinityManager.sysDir, "markkit.yml"));
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}

@@ -3,11 +3,12 @@ package com.github.lyokofirelyte.Divinity.PublicUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
- 
+
+import net.minecraft.util.gnu.trove.map.hash.THashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -314,7 +315,7 @@ public enum ParticleEffect {
 	 */
 	HAPPY_VILLAGER("happyVillager");
  
-	private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<String, ParticleEffect>();
+	private static final Map<String, ParticleEffect> NAME_MAP = new THashMap<String, ParticleEffect>();
 	private final String name;
 	private final boolean requiresWater;
  

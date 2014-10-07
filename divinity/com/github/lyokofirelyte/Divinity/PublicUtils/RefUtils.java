@@ -4,9 +4,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
- 
+
+import net.minecraft.util.gnu.trove.map.hash.THashMap;
+
 import org.bukkit.Bukkit;
  
 /**
@@ -448,7 +449,7 @@ public final class RefUtils {
 		DOUBLE(double.class, Double.class),
 		BOOLEAN(boolean.class, Boolean.class);
  
-		private static final Map<Class<?>, DataType> CLASS_MAP = new HashMap<Class<?>, DataType>();
+		private static final Map<Class<?>, DataType> CLASS_MAP = new THashMap<Class<?>, DataType>();
 		private final Class<?> primitive;
 		private final Class<?> reference;
  
@@ -715,7 +716,7 @@ public final class RefUtils {
 		STATUS_OUT_PONG("PacketStatusOutPong"),
 		STATUS_OUT_SERVER_INFO("PacketStatusOutServerInfo");
  
-		private static final Map<String, PacketType> NAME_MAP = new HashMap<String, PacketType>();
+		private static final Map<String, PacketType> NAME_MAP = new THashMap<String, PacketType>();
 		private final String name;
 		private Class<?> packet;
  

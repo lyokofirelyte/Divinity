@@ -132,8 +132,8 @@ public class TeamspeakManager {
 									case "//add":
 										
 										try {
-											Map<String, Object> add = new HashMap<>();
-											Map<String, Object> list = new HashMap<>();
+											Map<String, Object> add = new THashMap<>();
+											Map<String, Object> list = new THashMap<>();
 											list.put("link", e.getMessage().replace("\\//add", ""));
 											add.put("type", "add");
 											add.put("data", list);
