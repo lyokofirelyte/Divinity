@@ -128,7 +128,8 @@ public enum DPI {
 	YES_VOTE("YES_VOTE"),
 	NO_VOTE("NO_VOTE"),
 	VOTE_MESSAGE("VOTE_MESSAGE"),
-	MARKKIT_LOG("MARKKIT_LOG");
+	MARKKIT_LOG("MARKKIT_LOG"),
+	RAIN_TOGGLE("RAIN_TOGGLE");
 
 	DPI(String info){
 		this.info = info;
